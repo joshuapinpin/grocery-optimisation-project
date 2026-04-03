@@ -1,6 +1,6 @@
 ## ENGR301 Team 10 Decision Log
 
-| ID   | Date   | Decision | Why | Impact | Who |
+| ID   | Date   | Decision | Why | Impact |
 | --- | --- | --- | --- | --- |
 | D-01 | Week 3 | Web-based Application | Faster to build, Device compatability | Requirements for web UI | 
 | D-02 | Week 3 | Java as our coding language |  All team members are practiced and familiar with it | Requirements for Framework and Application |

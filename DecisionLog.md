@@ -7,3 +7,4 @@
 | D-03 | Week 6 | Application Framework / Tech stack - Spring Boot for Java (backend), MongoDB (nosql Database) or PostgreSQL (sql Database), React (frontend) | Team members are familiar, appropiate frameworks for a Java language, Web-based Application | Affects Requirements | 
 | D-04 | Week 6 | Decision Log | To keep track of our decisions regarding our project | no impact |
 | D-05 | Week 6 | Requirements and scope | To define scope and the requirements for the project | Requirements Document |
+| D-06 | Week 6 | Project / Application name | To have an identity, Bag n Save | Project |

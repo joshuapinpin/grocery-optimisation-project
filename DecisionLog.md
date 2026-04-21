@@ -8,3 +8,4 @@
 | D-04 | Week 6 | Decision Log | To keep track of our decisions regarding our project | no impact |
 | D-05 | Week 6 | Requirements and scope | To define scope and the requirements for the project | Requirements Document |
 | D-06 | Week 6 | Project / Application name | To have an identity, Bag n Save | Project |
+| D-07 | Week 7 | Created RACI Matrix | To understand the responsible, accountable, consulted and informed members of the team | Project |

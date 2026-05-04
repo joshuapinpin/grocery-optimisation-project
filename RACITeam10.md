@@ -1,7 +1,7 @@
 # Project RACI Matrix
 
 | ID | Task / Deliverable | Hunter Fromont | Jack Scrivener | Josh Pinpin | Nick Kho | Yaqoob Chaudry |
-| :--- | :--- | :---: | :---: | :---: | :---: | :---: |
+| :------- | :--- | :---: | :---: | :---: | :---: | :---: |
 | FR-001 | UI & UX | I | I | C | C | R/A |
 | FR-002 | Login & Authentication | I | C | R/A | I | I |
 | FR-003 | Price Optimisation Algorithm | R/A | C | I | I | I |

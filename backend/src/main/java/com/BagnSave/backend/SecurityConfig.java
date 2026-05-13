@@ -7,7 +7,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SecurityConfig {
-    
+
     // TODO: replace ths with proper authentication once Spring Security is configured
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {

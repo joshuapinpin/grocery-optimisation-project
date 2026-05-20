@@ -3,6 +3,9 @@ package com.BagnSave.backend.auth;
 import com.BagnSave.backend.auth.dto.AuthResponse;
 import com.BagnSave.backend.auth.dto.LoginRequest;
 import com.BagnSave.backend.auth.dto.RegisterRequest;
+import com.BagnSave.backend.auth.exception.InvalidCredentialsException;
+import com.BagnSave.backend.auth.exception.UsernameAlreadyExistsException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,7 +37,7 @@ public class AuthService {
 
         // Ensure username is unique
         if(accountRepository.existsByUsername(request.username())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists");
+            throw new UsernameAlreadyExistsException("Username '" + request.username() + "' already exists");
         }
 
         // Create and save new account
@@ -42,8 +45,13 @@ public class AuthService {
         account.username(request.username().trim());
         account.hashedPassword(passwordEncoder.encode(request.password()));
 
-        Account saved = accountRepository.save(account);
-        return new AuthResponse(saved.id(), saved.username(), "Account registration successful");
+        // Save and handle possible race-condition uniqueness violation.
+        try{
+            Account saved = accountRepository.save(account);
+            return new AuthResponse(saved.id(), saved.username(), "Account registration successful");
+        } catch(DataIntegrityViolationException e) {
+            throw new UsernameAlreadyExistsException("Username '" + request.username() + "' already exists");
+        }
     }
 
     /**
@@ -63,8 +71,9 @@ public class AuthService {
         Account account = accountRepository.findByUsername(request.username().trim())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username or password"));
 
+        // Validate username to password mapping
         if (!passwordEncoder.matches(request.password(), account.hashedPassword())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username or password");
+            throw new InvalidCredentialsException();
         }
 
         return new AuthResponse(account.id(), account.username(), "Login successful");}

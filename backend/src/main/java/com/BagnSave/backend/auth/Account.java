@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-@Entity
 @Table(name = "accounts", uniqueConstraints = {
         @UniqueConstraint(columnNames = "username")
 })
@@ -16,6 +15,7 @@ import lombok.experimental.Accessors;
 @Accessors(fluent = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

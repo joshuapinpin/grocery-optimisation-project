@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # File structure 
 
 # |--| storeData
@@ -20,10 +19,29 @@
 #       |--> public_prices_12.parquet
 
 
+#checks if a file has been downloaded already
+safeWget() {
+    wait=$1
+    getCommand=$2   #get command
+    outputFilePath=$3     #name to rename to
+    #Check if the duckDB has alreay been downloaded
+    echo "outputFilePath : $outputFilePath"
+    if [ ! -f "$outputFilePath" ]; then
+        #If the file does not exist then download it 
+        wget -O $outputFilePath $getCommand
+
+        echo "waiting $wait sec to not DOS server"
+        sleep $wait
+    fi
+}
+
+
+
 #--------------------- Download Parquet ---------------------
 downloadParquet() {
+    echo "called"
     # Creates a directory for parquet files
-    parquetFilesDirectoryName=parquetFiles
+    parquetFilesDirectoryName="parquetFiles"
     mkdir -p $parquetFilesDirectoryName
 
     # Creates a directory for each vendors parquet files
@@ -39,9 +57,11 @@ downloadParquet() {
             echo "Skiping id line"
         else
             echo "Current store id: $line"
-            wget -P $vedorParquetFilesDirectoryName https://assets-prod.grocer.nz/public/prices_per_store_v3/public_prices_$line.parquet 
-            echo "waiting 5 sec to not DOS server"
-            sleep 5
+            parquetFileName="$line"
+            parquetFilePath="$vedorParquetFilesDirectoryName/$parquetFileName"
+            safeWget 1 "https://assets-prod.grocer.nz/public/prices_per_store_v3/public_prices_$line.parquet" "$parquetFilePath"
+
+
         fi
         
     done < "$vendoresStoreIDsFilePath"
@@ -56,24 +76,14 @@ downloadParquet() {
 duckdbGet=$1
 echo "DuckDB get command                           : $duckdbGet"
 
-# last 17 char are the duckdb filename with the .br extension
+#Cuts it down to only after the last / so "base_v3.duckdb.br"
 duckdbCompressedFileName="${duckdbGet##*/}"
-echo "Compressed DuckDB file name                  : $duckdbCompressedFileName"
-
-# first 15 char are jsut the duckdb filename
+#Cuts off the .br extension so "base_v3.duckdb.br"
 duckdbFileName="${duckdbCompressedFileName%.br}"
 echo "DuckDB file name (no .br)                    : $duckdbFileName"
 
 #Check if the duckDB has alreay been downloaded
-if [ ! -f "$duckdbFileName" ]; then
-    echo "DuckDB does not exist already, Downloading ..."
-    #If the file does not exist then download it 
-    #Actual download command
-    wget $duckdbGet
-
-    #Rename downloaded duckdb to remoe .br extension
-    mv $duckdbCompressedFileName $duckdbFileName
-fi
+safeWget 0 "$duckdbGet" "$duckdbFileName"
 
 #--------------------- Extract Vendor IDs ---------------------
 
@@ -109,13 +119,8 @@ while IFS= read -r line; do
         duckdb base_v3.duckdb -c "COPY (SELECT id FROM public_stores WHERE vendor_id=$vendorID) TO '$vendorStoreIDsFilePath';"
 
         #download all the Parquet files for each vendor using the store ids 
-        downloadParquet "$vendorName" "$vendoresStoreIDsFilePath"
+        downloadParquet "$vendorName" "$vendorStoreIDsFilePath"
 
     fi
     
 done < "$vendorInfoFilePath"
-
-
-
-
-

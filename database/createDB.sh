@@ -99,7 +99,7 @@ vendorInfoFilePath="$storeDataDirName/vendorInfo.txt"
 
 mkdir -p $storeDataDirName
 # creates a txt with the vendor info 
-duckdb base_v3.duckdb -c "COPY (SELECT * FROM public_vendors) TO '$vendorInfoFilePath';"
+duckdb $duckdbFileName -c "COPY (SELECT * FROM public_vendors) TO '$vendorInfoFilePath';"
 
 while IFS= read -r line; do
     if [[ "$line" == "id,name" ]]; then
@@ -124,3 +124,18 @@ while IFS= read -r line; do
     fi
     
 done < "$vendorInfoFilePath"
+
+
+
+
+#--------------------- Convert to PostgreSQL ---------------------
+
+postgreSQLName="bagnsave_db_v1"
+
+#creates the postgreSQL
+export PGPASSWORD="postgres"
+createdb -h localhost -U "postgres" "bagnsave_db_v1"
+unset PGPASSWORD
+
+#connects to then exports the duck db tables to the postgreSQL database
+duckdb "$duckdbFileName" -c ".read exportFromDuckDB.sql"

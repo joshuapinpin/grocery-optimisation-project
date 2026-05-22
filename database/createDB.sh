@@ -37,9 +37,8 @@ safeWget() {
 
 
 
-#--------------------- Download Parquet ---------------------
+#--------------------- Download & import Parquet ---------------------
 downloadParquet() {
-    echo "called"
     # Creates a directory for parquet files
     parquetFilesDirectoryName="parquetFiles"
     mkdir -p $parquetFilesDirectoryName
@@ -59,15 +58,16 @@ downloadParquet() {
             echo "Current store id: $line"
             parquetFileName="$line"
             parquetFilePath="$vedorParquetFilesDirectoryName/$parquetFileName"
+
             safeWget 1 "https://assets-prod.grocer.nz/public/prices_per_store_v3/public_prices_$line.parquet" "$parquetFilePath"
 
-
+            #imports paraqute into duck db
+            duckdb $duckdbFileName -c "INSERT INTO public_prices SELECT * FROM read_parquet('$parquetFilePath');"
         fi
+
         
     done < "$vendoresStoreIDsFilePath"
 }
-
-
 
 
 #--------------------- Download Duck DB ---------------------
@@ -124,9 +124,6 @@ while IFS= read -r line; do
     fi
     
 done < "$vendorInfoFilePath"
-
-
-
 
 #--------------------- Convert to PostgreSQL ---------------------
 

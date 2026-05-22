@@ -132,7 +132,10 @@ postgreSQLName="bagnsave_db_v1"
 #creates the postgreSQL
 export PGPASSWORD="postgres"
 createdb -h localhost -U "postgres" "bagnsave_db_v1"
-unset PGPASSWORD
 
 #connects to then exports the duck db tables to the postgreSQL database
 duckdb "$duckdbFileName" -c ".read exportFromDuckDB.sql"
+
+psql -h "localhost" -U "postgres" -d "bagnsave_db_v1" -f "createPostgreSQL.sql"
+
+unset PGPASSWORD

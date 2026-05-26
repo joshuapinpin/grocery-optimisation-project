@@ -1,4 +1,7 @@
 package com.BagnSave.backend.mockshoppinglist.dto;
 
-public record CreateListRequest() {
-}
+import jakarta.validation.constraints.NotBlank;
+
+public record CreateListRequest(
+    @NotBlank String name
+) {}

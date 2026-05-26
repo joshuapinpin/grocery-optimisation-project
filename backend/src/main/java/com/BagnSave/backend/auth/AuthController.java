@@ -4,6 +4,8 @@ import com.BagnSave.backend.auth.dto.AuthResponse;
 import com.BagnSave.backend.auth.dto.LoginRequest;
 import com.BagnSave.backend.auth.dto.RegisterRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,9 +21,11 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
+    private final SecurityContextRepository securityContextRepository;
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService, SecurityContextRepository securityContextRepository) {
         this.authService = authService;
+        this.securityContextRepository = securityContextRepository;
     }
 
     @PostMapping("/register")
@@ -31,7 +36,10 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request, HttpSession session) {
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request,
+                                              HttpServletRequest httpRequest,
+                                              HttpServletResponse httpResponse,
+                                              HttpSession session) {
         AuthResponse response = authService.login(request);
 
         var authentication = new UsernamePasswordAuthenticationToken(
@@ -43,8 +51,10 @@ public class AuthController {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         context.setAuthentication(authentication);
         SecurityContextHolder.setContext(context);
+        securityContextRepository.saveContext(context, httpRequest, httpResponse);
 
         session.setAttribute("userId", response.id());
+        session.setAttribute("username", response.username());
         return ResponseEntity.ok(response);
     }
     
@@ -65,7 +75,6 @@ public class AuthController {
         session.invalidate();
         return ResponseEntity.noContent().build();
     }
-    
 
     @PostMapping("/ping")
     public ResponseEntity<String> ping() {

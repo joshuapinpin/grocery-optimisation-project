@@ -7,7 +7,7 @@ import com.BagnSave.backend.auth.dto.RegisterRequest;
 public interface AuthService {
     /**
      * Registers a new account with the provided username and password.
-     * Validates that the username and password are not null and that the username is unique.
+     *
      * @param request The registration request containing the username and password.
      * @return An AuthResponse containing the user's ID, username, and a success message.
      */
@@ -20,4 +20,18 @@ public interface AuthService {
      * @return An AuthResponse containing the user's ID, username, and a success message if authentication is successful.
      */
     AuthResponse login(LoginRequest request);
+
+    /**
+     * Logs out the user by invalidating their session or token.
+     *
+     * @param userId The ID of the user to log out.
+     */
+    void logout(Long userId);
+
+    /**
+     * Deletes the authenticated user's account and any data that depends on it.
+     *
+     * @param userId The ID of the account to delete.
+     */
+    void deleteAccount(Long userId);
 }

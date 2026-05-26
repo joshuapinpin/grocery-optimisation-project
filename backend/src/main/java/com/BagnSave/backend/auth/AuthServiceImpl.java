@@ -5,6 +5,7 @@ import com.BagnSave.backend.auth.dto.LoginRequest;
 import com.BagnSave.backend.auth.dto.RegisterRequest;
 import com.BagnSave.backend.auth.exception.InvalidCredentialsException;
 import com.BagnSave.backend.auth.exception.UsernameAlreadyExistsException;
+import com.BagnSave.backend.mockshoppinglist.ShoppingListRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,15 +16,20 @@ import org.springframework.web.server.ResponseStatusException;
 public class AuthServiceImpl implements AuthService {
 
     private final AccountRepository accountRepository;
+    private final ShoppingListRepository shoppingListRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public AuthServiceImpl(AccountRepository accountRepository, PasswordEncoder passwordEncoder) {
+    public AuthServiceImpl(AccountRepository accountRepository,
+                           ShoppingListRepository shoppingListRepository,
+                           PasswordEncoder passwordEncoder) {
         this.accountRepository = accountRepository;
+        this.shoppingListRepository = shoppingListRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public AuthResponse register(RegisterRequest request) {
+        System.out.println("REGISTER SERVICE HIT: " + request.username());
         String username = request.username().trim();
         String password = request.password();
 
@@ -33,9 +39,9 @@ public class AuthServiceImpl implements AuthService {
         }
 
         // Create and save a new account
-        Account account = new Account();
-        account.username(username);
-        account.hashedPassword(passwordEncoder.encode(password));
+        Account account = new Account()
+            .username(username)
+            .hashedPassword(passwordEncoder.encode(password));
 
         // Save and handle possible race-condition uniqueness violation.
         try{
@@ -63,5 +69,29 @@ public class AuthServiceImpl implements AuthService {
             throw new InvalidCredentialsException();
         }
 
-        return new AuthResponse(account.id(), account.username(), "Login successful");}
+        return new AuthResponse(account.id(), account.username(), "Login successful");
+    }
+
+    @Override
+    public void logout(Long userId) {
+        // Session cleanup logic (mocked for now)
+        // In a real implementation, you might: invalidate tokens, log activity, etc.
+    }
+
+    @Override
+    public void deleteAccount(Long userId) {
+        if (userId == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You must be logged in to delete your account");
+        }
+
+        Account account = accountRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found"));
+
+        var ownedLists = shoppingListRepository.findByOwnerUsername(account.username());
+        if (!ownedLists.isEmpty()) {
+            shoppingListRepository.deleteAll(ownedLists);
+        }
+
+        accountRepository.delete(account);
+    }
 }

@@ -30,6 +30,7 @@ public class BackendApplication {
 	public CorsFilter corsFilter() {
 		CorsConfiguration config = new CorsConfiguration();
 		// TODO: move allowed origins to application.properties so it can differ per environment
+		config.addAllowedOrigin("http://localhost:5171");
 		config.addAllowedOrigin("http://localhost:5173");
 		config.addAllowedMethod("*");
 		config.addAllowedHeader("*");

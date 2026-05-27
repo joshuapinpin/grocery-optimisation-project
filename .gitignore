@@ -1,3 +1,12 @@
 .idea/
 user-accounts-context.md
 controllers-context.md
+
+# Backend / frontend build outputs
+backend/target/
+frontend/node_modules/
+frontend/dist/
+
+# Local HTTPS development keystore
+backend/src/main/resources/keystore.p12
+

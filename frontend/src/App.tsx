@@ -1,15 +1,15 @@
-import { useEffect, useState } from "react"
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import MockProducts from './pages/MockProducts'
 
 function App() {
-  const [message, setMessage] = useState("")
-
-  useEffect(() => {
-    fetch("http://localhost:8080/hello")
-      .then(res => res.text())
-      .then(data => setMessage(data))
-  }, [])
-
-  return <h1>{message}</h1>
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/mock/products" element={<MockProducts />} />
+        <Route path="*" element={<Navigate to="/mock/products" replace />} />
+      </Routes>
+    </BrowserRouter>
+  )
 }
 
 export default App

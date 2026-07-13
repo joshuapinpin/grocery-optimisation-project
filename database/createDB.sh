@@ -19,6 +19,26 @@
 #       |--> public_prices_12.parquet
 
 
+# Removes all downloaded files and databases for a clean run
+cleanup(){
+    echo "Beginging clean up"
+    rm -rf parquetFiles
+    rm -rf storeData
+    rm base_v3.duckdb
+
+    # Removes the current bagnsave PostgreSQL database 
+    #----------- VERY DANGERGOUS ----------- 
+    export PGPASSWORD="postgres"
+    psql -h "localhost" -U "postgres" -d "postgres" -c "DROP DATABASE IF EXISTS bagnsave_db_v1;"
+    unset PGPASSWORD
+    #----------- VERY DANGERGOUS ----------- 
+
+    echo "Finished clean up"
+}
+
+
+
+
 #checks if a file has been downloaded already
 safeWget() {
     wait=$1
@@ -68,6 +88,9 @@ downloadParquet() {
         
     done < "$vendoresStoreIDsFilePath"
 }
+read -p "Press Enter to start cleanup ..."
+cleanup
+
 
 
 #--------------------- Download Duck DB ---------------------

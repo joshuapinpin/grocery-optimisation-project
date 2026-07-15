@@ -19,6 +19,26 @@
 #       |--> public_prices_12.parquet
 
 
+# Removes all downloaded files and databases for a clean run
+cleanup(){
+    echo "Beginging clean up"
+    rm -rf parquetFiles
+    rm -rf storeData
+    rm base_v3.duckdb
+
+    # Removes the current bagnsave PostgreSQL database 
+    #----------- VERY DANGERGOUS ----------- 
+    export PGPASSWORD="postgres"
+    psql -h "localhost" -U "postgres" -d "postgres" -c "DROP DATABASE IF EXISTS bagnsave_db_v1;"
+    unset PGPASSWORD
+    #----------- VERY DANGERGOUS ----------- 
+
+    echo "Finished clean up"
+}
+
+
+
+
 #checks if a file has been downloaded already
 safeWget() {
     wait=$1
@@ -68,9 +88,14 @@ downloadParquet() {
         
     done < "$vendoresStoreIDsFilePath"
 }
+read -p "Press Enter to start cleanup ..."
+cleanup
 
 
-#--------------------- Download Duck DB ---------------------
+
+read -p "Press Enter to start download..."
+clear
+echo "--------------------- Download Grocer DuckDB ---------------------"
 #First argument is duckdbget command 
 #should look like : https://assets-prod.grocer.nz/public/base_v3.duckdb.br
 duckdbGet=$1
@@ -85,7 +110,8 @@ echo "DuckDB file name (no .br)                    : $duckdbFileName"
 #Check if the duckDB has alreay been downloaded
 safeWget 0 "$duckdbGet" "$duckdbFileName"
 
-#--------------------- Extract Vendor IDs ---------------------
+read -p "Press Enter to continue..."
+echo "--------------------- Extract store ID numbers ---------------------"
 
 # storeDataDirName
 # storeDataDirName/vendorInfoFileName
@@ -100,6 +126,9 @@ vendorInfoFilePath="$storeDataDirName/vendorInfo.txt"
 mkdir -p $storeDataDirName
 # creates a txt with the vendor info 
 duckdb $duckdbFileName -c "COPY (SELECT * FROM public_vendors) TO '$vendorInfoFilePath';"
+
+read -p "Press Enter to continue..."
+echo "--------------------- Download and import parquet Files ---------------------"
 
 while IFS= read -r line; do
     if [[ "$line" == "id,name" ]]; then
@@ -125,7 +154,8 @@ while IFS= read -r line; do
     
 done < "$vendorInfoFilePath"
 
-#--------------------- Convert to PostgreSQL ---------------------
+read -p "Press Enter to continue..."
+echo "--------------------- Migrate DuckDB to PostgreSQL  ---------------------"
 
 postgreSQLName="bagnsave_db_v1"
 
@@ -136,6 +166,9 @@ createdb -h localhost -U "postgres" "bagnsave_db_v1"
 #connects to then exports the duck db tables to the postgreSQL database
 duckdb "$duckdbFileName" -c ".read exportFromDuckDB.sql"
 
+
+read -p "Press Enter to continue..."
+echo "--------------------- Add user account and shopping list relations  ---------------------"
 psql -h "localhost" -U "postgres" -d "bagnsave_db_v1" -f "createPostgreSQL.sql"
 
 unset PGPASSWORD

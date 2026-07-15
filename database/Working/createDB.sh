@@ -27,13 +27,9 @@ cleanup(){
     rm base_v3.duckdb
 
     # Removes the current bagnsave PostgreSQL database 
-    #----------- VERY DANGERGOUS ----------- 
-    export PGPASSWORD="postgres"
-    psql -h "localhost" -U "postgres" -d "postgres" -c "DROP DATABASE IF EXISTS bagnsave_db_v1;"
-    unset PGPASSWORD
-    #----------- VERY DANGERGOUS ----------- 
+    psql -c "DROP DATABASE IF EXISTS $dbName;"
 
-    echo "Finished clean up"
+    echo "Finished clean up"s
 }
 
 
@@ -163,11 +159,10 @@ echo "--------------------- Finish : Download and import parquet Files ---------
 
 echo "--------------------- Start : Migrate DuckDB to PostgreSQL  ---------------------"
 
-postgreSQLName="bagnsave_db_v1"
 
-#creates the postgreSQL
-export PGPASSWORD="postgres"
-createdb -h localhost -U "postgres" "bagnsave_db_v1"
+# dbName is defined in dockerfile as an env varable
+# uses PGUSER and PGPASSWORD env varables
+createdb $dbName
 
 #connects to then exports the duck db tables to the postgreSQL database
 duckdb "$duckdbFileName" -c ".read exportFromDuckDB.sql"
@@ -175,8 +170,7 @@ duckdb "$duckdbFileName" -c ".read exportFromDuckDB.sql"
 
 read -p "Press Enter to continue..."
 echo "--------------------- Add user account and shopping list relations  ---------------------"
-psql -h "localhost" -U "postgres" -d "bagnsave_db_v1" -f "createPostgreSQL.sql"
+psql -d $dbName -f "createPostgreSQL.sql"
 
-unset PGPASSWORD
 
 echo "--------------------- Finish : Migrate DuckDB to PostgreSQL  ---------------------"

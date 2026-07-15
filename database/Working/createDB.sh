@@ -49,6 +49,8 @@ downloadParquet() {
     
     vendoresStoreIDsFilePath=$2
 
+    count=0
+
     while IFS= read -r line; do
         
         if [[ "$line" == "id" ]]; then
@@ -62,6 +64,15 @@ downloadParquet() {
 
             #imports paraqute into duck db
             duckdb $duckdbFileName -c "INSERT INTO public_prices SELECT * FROM read_parquet('$parquetFilePath');"
+
+
+            # Increment the counter and check the limit
+            ((count++))
+            if (( count >= 5 )); then
+                echo "Reached limit of 5 stores. Exiting loop."
+                break
+            fi
+            
         fi
 
         

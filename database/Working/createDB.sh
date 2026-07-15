@@ -88,14 +88,16 @@ downloadParquet() {
         
     done < "$vendoresStoreIDsFilePath"
 }
-read -p "Press Enter to start cleanup ..."
+
+
+
+echo "--------------------- Start : Cleaning up file system ---------------------"
+
 cleanup
 
+echo "--------------------- Finish : Cleaning up file system ---------------------"
 
-
-read -p "Press Enter to start download..."
-clear
-echo "--------------------- Download Grocer DuckDB ---------------------"
+echo "--------------------- Start : Download Grocer DuckDB ---------------------"
 #First argument is duckdbget command 
 #should look like : https://assets-prod.grocer.nz/public/base_v3.duckdb.br
 duckdbGet=$1
@@ -110,8 +112,10 @@ echo "DuckDB file name (no .br)                    : $duckdbFileName"
 #Check if the duckDB has alreay been downloaded
 safeWget 0 "$duckdbGet" "$duckdbFileName"
 
-read -p "Press Enter to continue..."
-echo "--------------------- Extract store ID numbers ---------------------"
+echo "--------------------- Finish : Download Grocer DuckDB ---------------------"
+
+
+echo "--------------------- Start : Extract store ID numbers ---------------------"
 
 # storeDataDirName
 # storeDataDirName/vendorInfoFileName
@@ -127,8 +131,10 @@ mkdir -p $storeDataDirName
 # creates a txt with the vendor info 
 duckdb $duckdbFileName -c "COPY (SELECT * FROM public_vendors) TO '$vendorInfoFilePath';"
 
-read -p "Press Enter to continue..."
-echo "--------------------- Download and import parquet Files ---------------------"
+echo "--------------------- Finish : Extract store ID numbers ---------------------"
+
+
+echo "--------------------- Start : Download and import parquet Files ---------------------"
 
 while IFS= read -r line; do
     if [[ "$line" == "id,name" ]]; then
@@ -153,9 +159,9 @@ while IFS= read -r line; do
     fi
     
 done < "$vendorInfoFilePath"
+echo "--------------------- Finish : Download and import parquet Files ---------------------"
 
-read -p "Press Enter to continue..."
-echo "--------------------- Migrate DuckDB to PostgreSQL  ---------------------"
+echo "--------------------- Start : Migrate DuckDB to PostgreSQL  ---------------------"
 
 postgreSQLName="bagnsave_db_v1"
 
@@ -172,3 +178,5 @@ echo "--------------------- Add user account and shopping list relations  ------
 psql -h "localhost" -U "postgres" -d "bagnsave_db_v1" -f "createPostgreSQL.sql"
 
 unset PGPASSWORD
+
+echo "--------------------- Finish : Migrate DuckDB to PostgreSQL  ---------------------"

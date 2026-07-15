@@ -1,13 +1,25 @@
-FROM postgres:18.4-alpine3.24
+FROM postgres:18.4
 WORKDIR /app/
 
-# Default entry point
-COPY /createDB.sh /docker-entrypoint-initdb.d/createDB.sh
+# Install duckdb CLI
+# standard tools
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    unzip \
+    && rm -rf /var/lib/apt/lists/*
 
+# Run the installer, then move the binary into a standard system PATH
+RUN curl https://install.duckdb.org | sh && \
+    mv /root/.duckdb/cli/latest/duckdb /usr/local/bin/duckdb
+
+# Copys create script into entry point to run after postgresql starts
+COPY /createDB.sh /docker-entrypoint-initdb.d/createDB.sh
 
 COPY /exportFromDuckDB.sql /app/exportFromDuckDB.sql
 COPY /createPostgreSQL.sql /app/createPostgreSQL.sql
 
+RUN chown -R postgres:postgres /app /docker-entrypoint-initdb.d/createDB.sh
 
 # Env varables for the postgres docker images to use 
 # Will create user account automatically
@@ -25,4 +37,4 @@ ENV DBNAME bagnsave_db_v2
 
 ENV duckdbGet https://assets-prod.grocer.nz/public/base_v3.duckdb.br 
 
-RUN chmod +x /app/createDB.sh
+RUN chmod +x /docker-entrypoint-initdb.d/createDB.sh

@@ -148,12 +148,16 @@ echo "--------------------- Finish : Download and import parquet Files ---------
 echo "--------------------- Start : Migrate DuckDB to PostgreSQL  ---------------------"
 
 
-# DBNAME is defined in dockerfile as an env varable
-# uses PGUSER and PGPASSWORD env varables
-createdb $DBNAME
 
 #connects to then exports the duck db tables to the postgreSQL database
-duckdb "$duckdbFileName" -c ".read exportFromDuckDB.sql"
+#duckdb "$duckdbFileName" -c ".read exportFromDuckDB.sql"
+
+# Evil Vibe Coded thing to replace varables in SQL
+# \/ Vibe coded comment
+# Use eval and EOF to substitute the environment variables, then pipe it directly into DuckDB
+eval "cat <<EOF
+$(cat exportFromDuckDB.sql)
+EOF" | duckdb "$duckdbFileName"
 
 
 echo "--------------------- Add user account and shopping list relations  ---------------------"

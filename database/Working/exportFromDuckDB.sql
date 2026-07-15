@@ -1,7 +1,11 @@
 INSTALL postgres;
 LOAD postgres;
 
-ATTACH 'dbname=bagnsave_db_v1 user=postgres password=postgres host=localhost' AS pg (TYPE POSTGRES);
+
+--ATTACH 'dbname=${DBNAME} user=${PGUSER} password=${PGPASSWORD} host=127.0.0.1' AS pg (TYPE POSTGRES);
+--Switched to use the Unix domain socket as the tcp/ip sockets are not enabeld this early in the containers setup.
+--The container do not accept ip/tcp connections to prevent connections to the database before it is setup.
+ATTACH 'dbname=${DBNAME} user=${PGUSER} password=${PGPASSWORD} host=/var/run/postgresql/' AS pg (TYPE POSTGRES);
 
 CREATE TABLE pg.public_barcodes AS SELECT * FROM public_barcodes;
 CREATE TABLE pg.public_collection_hierarchy AS SELECT * FROM public_collection_hierarchy;

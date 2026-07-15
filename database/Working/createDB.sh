@@ -18,23 +18,6 @@
 #       |--> public_prices_11.parquet
 #       |--> public_prices_12.parquet
 
-
-# Removes all downloaded files and databases for a clean run
-cleanup(){
-    echo "Beginging clean up"
-    rm -rf parquetFiles
-    rm -rf storeData
-    rm base_v3.duckdb
-
-    # Removes the current bagnsave PostgreSQL database 
-    psql -c "DROP DATABASE IF EXISTS $DBNAME;"
-
-    echo "Finished clean up"
-}
-
-
-
-
 #checks if a file has been downloaded already
 safeWget() {
     wait=$1
@@ -85,13 +68,6 @@ downloadParquet() {
     done < "$vendoresStoreIDsFilePath"
 }
 
-
-
-echo "--------------------- Start : Cleaning up file system ---------------------"
-
-cleanup
-
-echo "--------------------- Finish : Cleaning up file system ---------------------"
 
 echo "--------------------- Start : Download Grocer DuckDB ---------------------"
 

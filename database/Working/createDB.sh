@@ -80,6 +80,9 @@ downloadParquet() {
 }
 
 
+cd /app/
+
+
 echo "--------------------- Start : Download Grocer DuckDB ---------------------"
 
 echo "DuckDB get command                           : $duckdbGet"

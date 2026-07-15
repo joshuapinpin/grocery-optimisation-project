@@ -27,9 +27,9 @@ cleanup(){
     rm base_v3.duckdb
 
     # Removes the current bagnsave PostgreSQL database 
-    psql -c "DROP DATABASE IF EXISTS $dbName;"
+    psql -c "DROP DATABASE IF EXISTS $DBNAME;"
 
-    echo "Finished clean up"s
+    echo "Finished clean up"
 }
 
 
@@ -94,9 +94,7 @@ cleanup
 echo "--------------------- Finish : Cleaning up file system ---------------------"
 
 echo "--------------------- Start : Download Grocer DuckDB ---------------------"
-#First argument is duckdbget command 
-#should look like : https://assets-prod.grocer.nz/public/base_v3.duckdb.br
-duckdbGet=$1
+
 echo "DuckDB get command                           : $duckdbGet"
 
 #Cuts it down to only after the last / so "base_v3.duckdb.br"
@@ -160,17 +158,16 @@ echo "--------------------- Finish : Download and import parquet Files ---------
 echo "--------------------- Start : Migrate DuckDB to PostgreSQL  ---------------------"
 
 
-# dbName is defined in dockerfile as an env varable
+# DBNAME is defined in dockerfile as an env varable
 # uses PGUSER and PGPASSWORD env varables
-createdb $dbName
+createdb $DBNAME
 
 #connects to then exports the duck db tables to the postgreSQL database
 duckdb "$duckdbFileName" -c ".read exportFromDuckDB.sql"
 
 
-read -p "Press Enter to continue..."
 echo "--------------------- Add user account and shopping list relations  ---------------------"
-psql -d $dbName -f "createPostgreSQL.sql"
+psql -d $DBNAME -f "createPostgreSQL.sql"
 
 
 echo "--------------------- Finish : Migrate DuckDB to PostgreSQL  ---------------------"

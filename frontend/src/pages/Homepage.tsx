@@ -6,9 +6,9 @@ function Homepage() {
     <div className="homepage">
       <section className="hero-section">
         <div className="hero-content">
-          <h1 className="hero-title">Welcome to BagnSave</h1>
+          <h1 className="hero-title">BagnSave</h1>
           <p className="hero-subtitle">
-            Find the best deals on quality bags from top retailers near you
+            The lowest prices and best routes for grocery stores across New Zealand
           </p>
           <Link to="/mock/products" className="cta-button">
             Shop Now
@@ -33,7 +33,7 @@ function Homepage() {
           <div className="feature-card">
             <div className="feature-icon">💰</div>
             <h3>Best Prices</h3>
-            <p>Find the lowest prices and exclusive deals on your favorite bags</p>
+            <p>Find the lowest prices and best routes for grocery stores across New Zealand</p>
           </div>
           <div className="feature-card">
             <div className="feature-icon">📍</div>

@@ -17,7 +17,7 @@ function Navbar() {
           </li>
           <li className="nav-item">
             <Link to="/mock/products" className="nav-link">
-              Products
+              Shop
             </Link>
           </li>
           <li className="nav-item">

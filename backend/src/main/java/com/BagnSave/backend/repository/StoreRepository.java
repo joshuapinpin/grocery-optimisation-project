@@ -1,5 +1,5 @@
 package com.BagnSave.backend.repository;
 
-public class SupermarketRepository {
+public class StoreRepository {
     
 }

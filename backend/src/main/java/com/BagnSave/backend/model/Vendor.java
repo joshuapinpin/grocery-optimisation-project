@@ -1,5 +1,5 @@
 package com.BagnSave.backend.model;
 
-public class Supermarket {
+public class Vendor {
     
 }

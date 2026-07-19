@@ -1,5 +1,5 @@
 package com.BagnSave.backend.dto;
 
-public class SupermarketDTO {
+public class VendorDTO {
     
 }

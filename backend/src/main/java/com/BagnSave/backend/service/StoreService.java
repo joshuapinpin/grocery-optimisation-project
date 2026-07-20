@@ -11,12 +11,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class SupermarketService {
+public class StoreService {
 
     private final StoreRepository storeRepository;
     private final VendorRepository vendorRepository;
 
-    public SupermarketService(StoreRepository storeRepository, VendorRepository vendorRepository) {
+    public StoreService(StoreRepository storeRepository, VendorRepository vendorRepository) {
         this.storeRepository = storeRepository;
         this.vendorRepository = vendorRepository;
     }

@@ -1,7 +1,7 @@
 package com.BagnSave.backend.controller;
 
 import com.BagnSave.backend.dto.StoreDTO;
-import com.BagnSave.backend.service.SupermarketService;
+import com.BagnSave.backend.service.StoreService;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,11 +12,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/supermarkets")
 @CrossOrigin(origins = "*") // To-Do: tighten to vercel URL
-public class SupermarketController {
+public class StoreController {
     
-    private final SupermarketService supermarketService;
+    private final StoreService supermarketService;
 
-    public SupermarketController(SupermarketService supermarketService) {
+    public StoreController(StoreService supermarketService) {
         this.supermarketService = supermarketService;
     }
 

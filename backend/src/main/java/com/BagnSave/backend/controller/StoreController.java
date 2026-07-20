@@ -10,18 +10,18 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/supermarkets")
+@RequestMapping("/api/stores")
 @CrossOrigin(origins = "*") // To-Do: tighten to vercel URL
 public class StoreController {
     
-    private final StoreService supermarketService;
+    private final StoreService storeService;
 
     public StoreController(StoreService supermarketService) {
-        this.supermarketService = supermarketService;
+        this.storeService = supermarketService;
     }
 
     @GetMapping
     public List<StoreDTO> getAllStores() {
-        return supermarketService.getAllStores();
+        return storeService.getAllStores();
     }
 }

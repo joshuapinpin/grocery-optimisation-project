@@ -43,11 +43,11 @@ public class Store {
         this.name = name;
     }
 
-    public boolean IsEnabled(){
+    public boolean isEnabled(){
         return isEnabled;
     }
 
-    public void setIsEnabled(boolean isEnabled){
+    public void setEnabled(boolean isEnabled){
         this.isEnabled = isEnabled;
     }
     

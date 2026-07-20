@@ -36,7 +36,7 @@ public class SupermarketService {
         return new StoreDTO(
                 store.getId(),
                 store.getName(),
-                store.IsEnabled(),
+                store.isEnabled(),
                 vendorName
         );
     }

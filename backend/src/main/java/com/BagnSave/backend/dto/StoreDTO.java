@@ -13,7 +13,7 @@ public class StoreDTO {
         this.id = id;
         this.name = name;
         this.isEnabled = isEnabled;
-        this.vendorName = name;
+        this.vendorName = vendorName;
     }
 
     public int getId() {
@@ -32,11 +32,11 @@ public class StoreDTO {
         this.name = name;
     }
     
-    public boolean IsEnabled() {
+    public boolean isEnabled() {
         return isEnabled;
     }
 
-    public void setIsEnabled(boolean isEnabled) {
+    public void setEnabled(boolean isEnabled) {
         this.isEnabled = isEnabled;
     }
 

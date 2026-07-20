@@ -1,5 +1,8 @@
 package com.BagnSave.backend.repository;
 
-public class StoreRepository {
-    
+import com.BagnSave.backend.model.Store;
+import java.util.List;
+
+public interface StoreRepository {
+    List<Store> findAll();
 }

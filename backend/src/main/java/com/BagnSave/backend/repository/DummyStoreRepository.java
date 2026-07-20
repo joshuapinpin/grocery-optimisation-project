@@ -6,6 +6,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
+@Primary
 public class DummyStoreRepository implements StoreRepository {
     
     public final List<Store> stores = List.of(

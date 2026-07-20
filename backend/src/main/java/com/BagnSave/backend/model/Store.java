@@ -43,7 +43,7 @@ public class Store {
         this.name = name;
     }
 
-    public boolean getIsEnabled(){
+    public boolean IsEnabled(){
         return isEnabled;
     }
 

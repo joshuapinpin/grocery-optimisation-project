@@ -1,4 +1,4 @@
-package com.BagnSave.backend.model;
+package com.BagnSave.backend.store;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

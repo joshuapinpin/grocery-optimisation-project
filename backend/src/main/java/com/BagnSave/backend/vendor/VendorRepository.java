@@ -1,6 +1,5 @@
-package com.BagnSave.backend.repository;
+package com.BagnSave.backend.vendor;
 
-import com.BagnSave.backend.model.Vendor;
 import java.util.List;
 import java.util.Optional;
 

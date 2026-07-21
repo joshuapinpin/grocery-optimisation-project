@@ -1,4 +1,4 @@
-package com.BagnSave.backend.dto;
+package com.BagnSave.backend.store.dto;
 
 public class StoreDTO {
     

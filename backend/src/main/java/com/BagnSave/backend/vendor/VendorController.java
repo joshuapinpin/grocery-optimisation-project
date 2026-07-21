@@ -1,11 +1,11 @@
-package com.BagnSave.backend.controller;
+package com.BagnSave.backend.vendor;
 
-import com.BagnSave.backend.dto.VendorDTO;
-import com.BagnSave.backend.service.VendorService;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.BagnSave.backend.vendor.dto.VendorDTO;
 
 import java.util.List;
 

@@ -1,6 +1,5 @@
-package com.BagnSave.backend.repository;
+package com.BagnSave.backend.store;
 
-import com.BagnSave.backend.model.Store;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 

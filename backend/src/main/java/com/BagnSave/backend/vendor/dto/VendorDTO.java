@@ -1,4 +1,4 @@
-package com.BagnSave.backend.dto;
+package com.BagnSave.backend.vendor.dto;
 
 public class VendorDTO {
 

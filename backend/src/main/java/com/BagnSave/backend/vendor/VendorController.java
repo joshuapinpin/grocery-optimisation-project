@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/vendors")
-@CrossOrigin(origins = "*") // To-Do: tighten to vercel URL
+//@CrossOrigin(origins = "*") // To-Do: tighten to vercel URL
 public class VendorController {
 
     private final VendorService vendorService;

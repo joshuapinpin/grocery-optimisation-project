@@ -18,27 +18,6 @@
 #       |--> public_prices_11.parquet
 #       |--> public_prices_12.parquet
 
-
-# Removes all downloaded files and databases for a clean run
-cleanup(){
-    echo "Beginging clean up"
-    rm -rf parquetFiles
-    rm -rf storeData
-    rm base_v3.duckdb
-
-    # Removes the current bagnsave PostgreSQL database 
-    #----------- VERY DANGERGOUS ----------- 
-    export PGPASSWORD="postgres"
-    psql -h "localhost" -U "postgres" -d "postgres" -c "DROP DATABASE IF EXISTS bagnsave_db_v1;"
-    unset PGPASSWORD
-    #----------- VERY DANGERGOUS ----------- 
-
-    echo "Finished clean up"
-}
-
-
-
-
 #checks if a file has been downloaded already
 safeWget() {
     wait=$1
@@ -70,6 +49,8 @@ downloadParquet() {
     
     vendoresStoreIDsFilePath=$2
 
+    count=0
+
     while IFS= read -r line; do
         
         if [[ "$line" == "id" ]]; then
@@ -83,22 +64,27 @@ downloadParquet() {
 
             #imports paraqute into duck db
             duckdb $duckdbFileName -c "INSERT INTO public_prices SELECT * FROM read_parquet('$parquetFilePath');"
+
+
+            # Increment the counter and check the limit
+            ((count++))
+            if (( count >= 5 )); then
+                echo "Reached limit of 5 stores. Exiting loop."
+                break
+            fi
+            
         fi
 
         
     done < "$vendoresStoreIDsFilePath"
 }
-read -p "Press Enter to start cleanup ..."
-cleanup
 
 
+cd /app/
 
-read -p "Press Enter to start download..."
-clear
-echo "--------------------- Download Grocer DuckDB ---------------------"
-#First argument is duckdbget command 
-#should look like : https://assets-prod.grocer.nz/public/base_v3.duckdb.br
-duckdbGet=$1
+
+echo "--------------------- Start : Download Grocer DuckDB ---------------------"
+
 echo "DuckDB get command                           : $duckdbGet"
 
 #Cuts it down to only after the last / so "base_v3.duckdb.br"
@@ -110,8 +96,10 @@ echo "DuckDB file name (no .br)                    : $duckdbFileName"
 #Check if the duckDB has alreay been downloaded
 safeWget 0 "$duckdbGet" "$duckdbFileName"
 
-read -p "Press Enter to continue..."
-echo "--------------------- Extract store ID numbers ---------------------"
+echo "--------------------- Finish : Download Grocer DuckDB ---------------------"
+
+
+echo "--------------------- Start : Extract store ID numbers ---------------------"
 
 # storeDataDirName
 # storeDataDirName/vendorInfoFileName
@@ -127,8 +115,10 @@ mkdir -p $storeDataDirName
 # creates a txt with the vendor info 
 duckdb $duckdbFileName -c "COPY (SELECT * FROM public_vendors) TO '$vendorInfoFilePath';"
 
-read -p "Press Enter to continue..."
-echo "--------------------- Download and import parquet Files ---------------------"
+echo "--------------------- Finish : Extract store ID numbers ---------------------"
+
+
+echo "--------------------- Start : Download and import parquet Files ---------------------"
 
 while IFS= read -r line; do
     if [[ "$line" == "id,name" ]]; then
@@ -153,22 +143,25 @@ while IFS= read -r line; do
     fi
     
 done < "$vendorInfoFilePath"
+echo "--------------------- Finish : Download and import parquet Files ---------------------"
 
-read -p "Press Enter to continue..."
-echo "--------------------- Migrate DuckDB to PostgreSQL  ---------------------"
+echo "--------------------- Start : Migrate DuckDB to PostgreSQL  ---------------------"
 
-postgreSQLName="bagnsave_db_v1"
 
-#creates the postgreSQL
-export PGPASSWORD="postgres"
-createdb -h localhost -U "postgres" "bagnsave_db_v1"
 
 #connects to then exports the duck db tables to the postgreSQL database
-duckdb "$duckdbFileName" -c ".read exportFromDuckDB.sql"
+#duckdb "$duckdbFileName" -c ".read exportFromDuckDB.sql"
+
+# Evil Vibe Coded thing to replace varables in SQL
+# \/ Vibe coded comment
+# Use eval and EOF to substitute the environment variables, then pipe it directly into DuckDB
+eval "cat <<EOF
+$(cat exportFromDuckDB.sql)
+EOF" | duckdb "$duckdbFileName"
 
 
-read -p "Press Enter to continue..."
 echo "--------------------- Add user account and shopping list relations  ---------------------"
-psql -h "localhost" -U "postgres" -d "bagnsave_db_v1" -f "createPostgreSQL.sql"
+psql -d $DBNAME -f "createPostgreSQL.sql"
 
-unset PGPASSWORD
+
+echo "--------------------- Finish : Migrate DuckDB to PostgreSQL  ---------------------"

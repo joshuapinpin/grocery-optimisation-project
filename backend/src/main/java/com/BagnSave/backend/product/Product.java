@@ -9,12 +9,12 @@ import jakarta.persistence.Table;
 public class Product {
 
     @Id
-    private int id;
+    private Integer id;
     private String name;
     private String brand;
     private String unit;
     private String size;
-    private int redirectedTo;
+    private Integer redirectedTo;
 
     public Product() {} // private ?
 

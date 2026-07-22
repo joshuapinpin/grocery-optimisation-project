@@ -2,12 +2,12 @@ package com.BagnSave.backend.product.dto;
 
 public class ProductDTO {
     
-    private int id;
+    private Integer id;
     private String name;
     private String brand;
     private String unit;
     private String size;
-    private int redirectedTo;
+    private Integer redirectedTo;
 
     public ProductDTO() {}
 

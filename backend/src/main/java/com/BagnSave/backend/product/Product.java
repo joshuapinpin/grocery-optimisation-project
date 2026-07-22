@@ -18,7 +18,7 @@ public class Product {
 
     public Product() {} // private ?
 
-    public Product(int id, String name, String brand, String unit, String size, int redirectedTo) {
+    public Product(Integer id, String name, String brand, String unit, String size, Integer redirectedTo) {
         this.id = id;
         this.name = name;
         this.brand = brand;

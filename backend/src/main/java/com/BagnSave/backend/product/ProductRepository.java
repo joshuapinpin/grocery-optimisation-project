@@ -1,5 +1,5 @@
 package com.BagnSave.backend.product;
 
-public class ProductRepository {
-    
-}
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ProductRepository extends JpaRepository<Product, Integer>{}

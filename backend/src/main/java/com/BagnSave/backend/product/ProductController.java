@@ -9,7 +9,7 @@ import com.BagnSave.backend.product.dto.ProductDTO;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/Products")
+@RequestMapping("/api/products")
 public class ProductController {
     
     private final ProductService productService;

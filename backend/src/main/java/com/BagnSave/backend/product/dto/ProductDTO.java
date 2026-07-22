@@ -20,11 +20,11 @@ public class ProductDTO {
         this.redirectedTo = redirectedTo;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -60,11 +60,11 @@ public class ProductDTO {
         this.size = size;
     }
 
-    public int getRedirectedTo() {
+    public Integer getRedirectedTo() {
         return redirectedTo;
     }
 
-    public void setRedirectedTo(int redirectedTo) {
+    public void setRedirectedTo(Integer redirectedTo) {
         this.redirectedTo = redirectedTo;
     }
 

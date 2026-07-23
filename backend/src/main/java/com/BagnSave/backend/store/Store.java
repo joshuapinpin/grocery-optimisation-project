@@ -1,63 +1,32 @@
 package com.BagnSave.backend.store;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import lombok.Getter;
 
+@Getter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString(onlyExplicitlyIncluded = true)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Entity
 @Table(name = "public_stores")
 public class Store {
 
-    // To-Do: Finalize supermarket entity data types.
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @EqualsAndHashCode.Include
+    @ToString.Include
+    private Integer id;
 
+    @ToString.Include
     private String name;
-    private boolean isEnabled;
-    private int vendorId;    
-
-    public Store(){}
     
-    public Store(int id, String name, boolean isEnabled, int vendorId){
-        this.id = id;
-        this.name = name;
-        this.isEnabled = isEnabled;
-        this.vendorId = vendorId;
-    }
-
-    public int getId(){
-        return id;
-    }
-
-    public void setId(int id){
-        this.id = id; 
-    }
-
-    public String getName(){
-        return name;
-    }
-
-    public void setName(String name){
-        this.name = name;
-    }
-
-    public boolean isEnabled(){
-        return isEnabled;
-    }
-
-    public void setEnabled(boolean isEnabled){
-        this.isEnabled = isEnabled;
-    }
-    
-    public int getVendorId(){
-        return vendorId;
-    }
-
-    public void setVendorId(int vendorId){
-        this.vendorId = vendorId;
-    }
+    private Boolean isEnabled;
+    private Integer vendorId;    
 }

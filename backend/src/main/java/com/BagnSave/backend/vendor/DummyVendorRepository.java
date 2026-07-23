@@ -1,6 +1,5 @@
-package com.BagnSave.backend.repository;
+package com.BagnSave.backend.vendor;
 
-import com.BagnSave.backend.model.Vendor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 

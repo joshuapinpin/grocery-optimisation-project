@@ -1,6 +1,5 @@
-package com.BagnSave.backend.repository;
+package com.BagnSave.backend.store;
 
-import com.BagnSave.backend.model.Store;
 import java.util.List;
 
 public interface StoreRepository {

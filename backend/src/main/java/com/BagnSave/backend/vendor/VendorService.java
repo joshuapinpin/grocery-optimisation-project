@@ -1,9 +1,8 @@
-package com.BagnSave.backend.service;
+package com.BagnSave.backend.vendor;
 
-import com.BagnSave.backend.dto.VendorDTO;
-import com.BagnSave.backend.model.Vendor;
-import com.BagnSave.backend.repository.VendorRepository;
 import org.springframework.stereotype.Service;
+
+import com.BagnSave.backend.vendor.dto.VendorDTO;
 
 import java.util.List;
 

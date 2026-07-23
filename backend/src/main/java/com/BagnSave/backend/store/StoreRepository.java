@@ -1,7 +1,5 @@
 package com.BagnSave.backend.store;
 
-import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface StoreRepository {
-    List<Store> findAll();
-}
+public interface StoreRepository extends JpaRepository<Store, Integer>{}

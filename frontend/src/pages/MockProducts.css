@@ -2,9 +2,9 @@
 
 /* ─── Tokens ─────────────────────────────────────────────────────────────── */
 .mp-page {
-  --mp-bg:        #F6F3EC;
-  --mp-surface:   #FDFAF4;
-  --mp-surface2:  #F0ECE4;
+  --mp-bg:        var(--bg);
+  --mp-bg:        var(--bg);
+  --mp-bg:        var(--bg);
   --mp-border:    #DDD9CF;
   --mp-text:      #1C1914;
   --mp-text2:     #5C5449;
@@ -19,7 +19,7 @@
 
   text-align: left;
   min-height: 100vh;
-  background-color: var(--mp-bg);
+  background-color: var(--bg);
   background-image: radial-gradient(circle, rgba(0,0,0,0.055) 1px, transparent 0);
   background-size: 26px 26px;
   font-family: 'DM Sans', system-ui, sans-serif;

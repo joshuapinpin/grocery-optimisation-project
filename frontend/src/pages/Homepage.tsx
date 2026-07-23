@@ -15,7 +15,7 @@ function Homepage() {
           </Link>
         </div>
         <div className="hero-image">
-          <div className="hero-placeholder">🛍️</div>
+          <div className="hero-placeholder">🧺️</div>
         </div>
       </section>
 

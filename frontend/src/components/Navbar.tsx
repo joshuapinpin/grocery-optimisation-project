@@ -6,7 +6,7 @@ function Navbar() {
     <nav className="navbar">
       <div className="navbar-container">
         <Link to="/" className="navbar-logo">
-          <span className="logo-icon">🛍️</span>
+          <span className="logo-icon">🧺</span>
           BagnSave
         </Link>
         <ul className="nav-menu">
@@ -26,6 +26,12 @@ function Navbar() {
             </Link>
           </li>
         </ul>
+
+        <div className="nav-actions">
+          <Link to="/login" className="login-button">
+            Sign In
+          </Link>
+        </div>
       </div>
     </nav>
   )

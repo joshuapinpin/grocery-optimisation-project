@@ -1,9 +1,5 @@
 package com.BagnSave.backend.vendor;
 
-import java.util.List;
-import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface VendorRepository {
-    List<Vendor> findAll();
-    Optional<Vendor> findById(int id);
-}
+public interface VendorRepository extends JpaRepository<Vendor, Integer> {}

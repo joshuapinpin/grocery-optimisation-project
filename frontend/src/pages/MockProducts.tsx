@@ -133,10 +133,6 @@ export default function MockProducts() {
 
   return (
     <div className="mp-page">
-      <header className="mp-header">
-        <span className="mp-logo">BagnSave</span>
-        <span className="mp-tagline">Compare grocery prices across NZ stores</span>
-      </header>
       <div className="mp-layout">
         <main className="mp-products">
           {loading && (

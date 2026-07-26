@@ -1,5 +1,5 @@
 package com.BagnSave.backend.collectionhierarchy;
 
-public class CollectionHierarchyRepository {
-    
-}
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface CollectionHierarchyRepository extends JpaRepository<CollectionHierarchy, CollectionHierarchyId> {}

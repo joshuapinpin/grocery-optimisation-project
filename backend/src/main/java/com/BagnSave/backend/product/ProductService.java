@@ -21,7 +21,7 @@ public class ProductService {
                 .map(this::toDTO);
     }
 
-    public ProductDTO toDTO(Product product) {
+    private ProductDTO toDTO(Product product) {
         return new ProductDTO(
             product.getId(),
             product.getName(),

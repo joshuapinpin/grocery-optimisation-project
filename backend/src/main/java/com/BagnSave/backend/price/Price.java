@@ -1,7 +1,7 @@
 package com.BagnSave.backend.price;
 
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -21,7 +21,20 @@ import java.time.OffsetDateTime;
 @Table(name = "public_prices")
 public class Price {
 
-    private OffsetDateTime createdAt;
+    @EqualsAndHashCode.Include
+    @ToString.Include
+    @EmbeddedId
+    private PriceId id;
+
+    private Integer originalPriceCent;
+    private Integer salePriceCent;
+    private Integer clubPriceCent;
+    private Integer onlinePriceCent;
+    private Integer multibuyPriceInteger;
+    private Integer multibuyQuantity;
+    private Integer clubMultibuyPriceCent;
+    private Integer clubMultibuyQuantity;
+    private OffsetDateTime updatedAt;
 
     
 }

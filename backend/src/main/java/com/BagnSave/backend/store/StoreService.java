@@ -3,10 +3,9 @@ package com.BagnSave.backend.store;
 import com.BagnSave.backend.store.dto.StoreDTO;
 import com.BagnSave.backend.vendor.Vendor;
 import com.BagnSave.backend.vendor.VendorRepository;
-
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 
 @Service
@@ -20,12 +19,9 @@ public class StoreService {
         this.vendorRepository = vendorRepository;
     }
     
-    public List<StoreDTO> getAllStores() {
-        List<Store> stores = storeRepository.findAll();
-
-        return stores.stream()
-                .map(this::toDTO)
-                .toList();
+    public Page<StoreDTO> getStores(Pageable pageable) {
+        return storeRepository.findAll(pageable)
+                .map(this::toDTO);
     }
 
     private StoreDTO toDTO(Store store) {

@@ -1,5 +1,5 @@
 package com.BagnSave.backend.collectionmember;
 
-public class CollectionMemberRepository {
-    
-}
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface CollectionMemberRepository extends JpaRepository<CollectionMember, CollectionMemberId> {}

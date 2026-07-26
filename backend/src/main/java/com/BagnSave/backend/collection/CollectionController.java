@@ -1,4 +1,4 @@
-package com.BagnSave.backend.product;
+package com.BagnSave.backend.collection;
 
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.data.domain.Page;
@@ -6,26 +6,25 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import com.BagnSave.backend.product.dto.ProductDTO;
+import com.BagnSave.backend.collection.dto.CollectionDTO;
 import com.BagnSave.backend.shared.PaginationDefaults;
 
 @RestController
-@RequestMapping("/api/products")
-public class ProductController {
+@RequestMapping("/api/collections")
+public class CollectionController {
     
-    private final ProductService productService;
+    private final CollectionService collectionService;
 
-    public ProductController(ProductService productService) {
-        this.productService = productService;
+    public CollectionController(CollectionService collectionService) {
+        this.collectionService = collectionService;
     }
 
     @GetMapping
-    public Page<ProductDTO> getProducts(
+    public Page<CollectionDTO> getCollections(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "" + PaginationDefaults.DEFAULT_PAGE_SIZE) int size
     ) {
         int safeSize = Math.min(size, PaginationDefaults.MAX_PAGE_SIZE);
-        return productService.getProducts(PageRequest.of(page, safeSize));
+        return collectionService.getCollections(PageRequest.of(page, safeSize));
     }
-
 }

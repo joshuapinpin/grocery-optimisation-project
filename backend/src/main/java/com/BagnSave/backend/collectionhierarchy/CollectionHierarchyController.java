@@ -1,6 +1,6 @@
-package com.BagnSave.backend.price;
+package com.BagnSave.backend.collectionhierarchy;
 
-import com.BagnSave.backend.price.dto.PriceDTO;
+import com.BagnSave.backend.collectionhierarchy.dto.CollectionHierarchyDTO;
 import com.BagnSave.backend.shared.PaginationDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -10,21 +10,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/prices")
-public class PriceController {
+@RequestMapping("/api/collectionhierarchy")
+public class CollectionHierarchyController {
     
-    private final PriceService priceService;
+    private final CollectionHierarchyService collectionHierarchyService;
 
-    public PriceController(PriceService priceService) {
-        this.priceService = priceService;
+    public CollectionHierarchyController(CollectionHierarchyService collectionHierarchyService) {
+        this.collectionHierarchyService = collectionHierarchyService;
     }
 
     @GetMapping
-    public Page<PriceDTO> getPrices(
+    public Page<CollectionHierarchyDTO> getCollectionHierarchy(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "" + PaginationDefaults.DEFAULT_PAGE_SIZE) int size
     ) {
         int safeSize = Math.min(size, PaginationDefaults.MAX_PAGE_SIZE);
-        return priceService.getPrices(PageRequest.of(page, safeSize));
+        return collectionHierarchyService.getCollectionHierarchy(PageRequest.of(page, safeSize));
     }
+
 }

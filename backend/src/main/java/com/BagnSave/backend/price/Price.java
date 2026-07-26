@@ -35,6 +35,4 @@ public class Price {
     private Integer clubMultibuyPriceCent;
     private Integer clubMultibuyQuantity;
     private OffsetDateTime updatedAt;
-
-    
 }

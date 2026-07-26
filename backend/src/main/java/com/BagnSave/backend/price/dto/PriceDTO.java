@@ -11,7 +11,7 @@ public class PriceDTO {
     Integer salePriceCent;
     Integer clubPriceCent;
     Integer onlinePriceCent;
-    Integer multibuyPriceInteger;
+    Integer multibuyPriceCent;
     Integer multibuyQuantity;
     Integer clubMultibuyPriceCent;
     Integer clubMultibuyQuantity;

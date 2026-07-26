@@ -31,7 +31,7 @@ public class PriceService {
             price.getSalePriceCent(),
             price.getClubPriceCent(),
             price.getOnlinePriceCent(),
-            price.getMultibuyPriceInteger(),
+            price.getMultibuyPriceCent(),
             price.getMultibuyQuantity(),
             price.getClubMultibuyPriceCent(),
             price.getClubMultibuyQuantity(),

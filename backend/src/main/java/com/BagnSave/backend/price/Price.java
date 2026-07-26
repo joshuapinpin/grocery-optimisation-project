@@ -30,7 +30,7 @@ public class Price {
     private Integer salePriceCent;
     private Integer clubPriceCent;
     private Integer onlinePriceCent;
-    private Integer multibuyPriceInteger;
+    private Integer multibuyPriceCent;
     private Integer multibuyQuantity;
     private Integer clubMultibuyPriceCent;
     private Integer clubMultibuyQuantity;

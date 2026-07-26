@@ -35,7 +35,7 @@ public class StoreService {
         return new StoreDTO(
                 store.getId(),
                 store.getName(),
-                store.isEnabled(),
+                store.getIsEnabled(),
                 vendorName
         );
     }

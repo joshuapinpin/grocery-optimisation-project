@@ -1,10 +1,11 @@
 package com.BagnSave.backend.vendor;
 
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.BagnSave.backend.vendor.dto.VendorDTO;
-
-import java.util.List;
 
 @Service
 public class VendorService {
@@ -15,12 +16,9 @@ public class VendorService {
         this.vendorRepository = vendorRepository;
     }
 
-    public List<VendorDTO> getAllVendors() {
-        List<Vendor> vendors = vendorRepository.findAll();
-
-        return vendors.stream()
-                .map(this::toDTO)
-                .toList();
+    public Page<VendorDTO> getVendors(Pageable pageable) {
+        return vendorRepository.findAll(pageable)
+                .map(this::toDTO);
     }
 
     private VendorDTO toDTO(Vendor vendor) {

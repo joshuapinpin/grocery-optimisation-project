@@ -1,7 +1,8 @@
 package com.BagnSave.backend.price;
 
-import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.BagnSave.backend.price.dto.PriceDTO;
@@ -15,12 +16,9 @@ public class PriceService {
         this.priceRepository = priceRepository;
     }
 
-    public List<PriceDTO> getAllPrices() {
-        List<Price> prices = priceRepository.findAll();
-
-        return prices.stream()
-                .map(this::toDTO)
-                .toList();
+    public Page<PriceDTO> getPrices(Pageable pageable) {
+        return priceRepository.findAll(pageable)
+                .map(this::toDTO);
     }
 
     private PriceDTO toDTO(Price price) {

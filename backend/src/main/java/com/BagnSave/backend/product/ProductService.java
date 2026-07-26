@@ -1,7 +1,7 @@
 package com.BagnSave.backend.product;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.BagnSave.backend.product.dto.ProductDTO;
@@ -15,12 +15,10 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public List<ProductDTO> getAllProducts() {
-        List<Product> products = productRepository.findAll();
+    public Page<ProductDTO> getProducts(Pageable pageable) {
 
-        return products.stream()
-                .map(this::toDTO)
-                .toList();
+        return productRepository.findAll(pageable)
+                .map(this::toDTO);
     }
 
     public ProductDTO toDTO(Product product) {

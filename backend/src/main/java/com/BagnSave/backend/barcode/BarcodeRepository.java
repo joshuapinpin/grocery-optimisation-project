@@ -1,5 +1,5 @@
 package com.BagnSave.backend.barcode;
 
-public class BarcodeRepository {
-    
-}
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface BarcodeRepository extends JpaRepository<Barcode, String> {}

@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.BagnSave.backend.store.dto.StoreDTO;
-
 import java.util.List;
 
 @RestController

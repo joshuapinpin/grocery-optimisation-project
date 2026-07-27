@@ -63,7 +63,7 @@ No Meetings
     - Elected Jack as team manager. 
 #### Goals Before next Meeting 
 
-- Hunter -
+- Hunter - Complete all Permenant Database Services
 - Nick -
 - Yaqoob - 
 - Josh - 

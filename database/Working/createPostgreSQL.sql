@@ -1,10 +1,12 @@
-ALTER TABLE public_collections 
-    ADD CONSTRAINT pk_public_collections PRIMARY KEY (id);
+
+ALTER TABLE public_vendors 
+    ADD CONSTRAINT pk_public_vendors PRIMARY KEY (id);
 
 ALTER TABLE public_products 
     ADD CONSTRAINT pk_public_products PRIMARY KEY (id);
 
-
+ALTER TABLE public_collections 
+    ADD CONSTRAINT pk_public_collections PRIMARY KEY (id);
 
 
 CREATE TABLE ACCOUNT(

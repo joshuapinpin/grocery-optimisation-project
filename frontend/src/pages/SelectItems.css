@@ -1,0 +1,216 @@
+.select-page {
+  min-height: calc(100vh - 80px);
+  background: var(--bg);
+  padding: 2.5rem 2rem 8rem;
+}
+
+.select-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.select-title {
+  font-family: var(--heading);
+  font-weight: 900;
+  font-size: 32px;
+  color: var(--text-h);
+  margin-bottom: 8px;
+}
+
+.select-subtitle {
+  color: var(--text);
+  font-size: 15px;
+}
+
+.select-controls {
+  max-width: 900px;
+  margin: 0 auto 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+.select-search {
+  width: 100%;
+  max-width: 420px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--code-bg);
+  color: var(--text-h);
+  font-size: 15px;
+}
+
+.select-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.select-cat {
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--code-bg);
+  color: var(--text);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.select-cat:hover {
+  border-color: var(--accent);
+}
+
+.select-cat-active {
+  background: var(--accent);
+  border-color: var(--accent-border);
+  color: var(--bg);
+  font-weight: 600;
+}
+
+.select-grid {
+  max-width: 900px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.select-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 20px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--code-bg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  text-align: left;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.select-item:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+}
+
+.select-item-picked {
+  border-color: var(--accent-border);
+  background: var(--accent-bg);
+}
+
+.select-item-emoji {
+  font-size: 28px;
+}
+
+.select-item-name {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text-h);
+}
+
+.select-item-cat {
+  font-size: 12px;
+  color: var(--text);
+}
+
+.select-item-tick {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--bg);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.select-empty {
+  text-align: center;
+  color: var(--text);
+  margin-top: 2rem;
+}
+
+/* sticky bar at the bottom so the compare button is always reachable */
+.select-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 2rem;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.select-bar-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.select-bar-empty {
+  color: var(--text);
+  font-size: 14px;
+}
+
+.select-bar-count {
+  color: var(--text-h);
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.select-error {
+  color: red;
+  font-size: 13px;
+}
+
+.select-bar-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.select-clear {
+  padding: 12px 20px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.select-clear:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.select-compare {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-bg) 100%);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  color: var(--bg);
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.select-compare:hover {
+  transform: translateY(-2px);
+}

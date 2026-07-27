@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Homepage from './pages/Homepage'
 import MockProducts from './pages/MockProducts'
@@ -6,6 +6,7 @@ import Login from './pages/Login'
 import SelectItems from './pages/SelectItems'
 import Compare from './pages/Compare'
 import Register from './pages/Register'
+import NotFound from './pages/NotFound'
 
 function App() {
   return (
@@ -18,6 +19,8 @@ function App() {
         <Route path="/select-items" element={<SelectItems />} />
         <Route path="/compare" element={<Compare />} />
         <Route path="/register" element={<Register />} />
+        {/* keep this last, it matches anything the routes above didn't */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   )

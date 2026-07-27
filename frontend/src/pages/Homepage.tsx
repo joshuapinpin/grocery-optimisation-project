@@ -10,7 +10,7 @@ function Homepage() {
           <p className="hero-subtitle">
             The lowest prices and best routes for grocery stores across New Zealand
           </p>
-          <Link to="/mock/products" className="cta-button">
+          <Link to="/select-stores" className="cta-button">
             Shop Now
           </Link>
         </div>

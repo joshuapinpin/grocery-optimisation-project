@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/stores")
@@ -26,5 +27,10 @@ public class StoreController {
     ) {
         int safeSize = Math.min(size, PaginationDefaults.MAX_PAGE_SIZE);
         return storeService.getStores(PageRequest.of(page, safeSize));
+    }
+
+    @GetMapping("/all")
+    public List<StoreDTO> getAllStores() {
+        return storeService.getAllStores();
     }
 }

@@ -3,3 +3,5 @@ database/**/*.parquet
 database/base_v3.duckdb
 database/storeData/*
 database/parquetFiles/*
+
+oauth-plan.md

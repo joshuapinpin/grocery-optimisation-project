@@ -1,0 +1,66 @@
+stages:
+  - build
+
+frontend-build:
+  stage: build
+  image: node:20
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
+  cache:
+    key: frontend-npm
+    paths:
+      - frontend/node_modules/
+  script:
+    - cd frontend
+    - npm ci
+    - npm run build
+
+frontend-lint:
+  stage: build
+  image: node:20
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
+  allow_failure: true
+  cache:
+    key: frontend-npm
+    paths:
+      - frontend/node_modules/
+  script:
+    - cd frontend
+    - npm ci
+    - npm run lint
+
+backend-lint:
+  stage: build
+  image: maven:3.9-eclipse-temurin-21
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
+  allow_failure: true
+  cache:
+    key: backend-maven
+    paths:
+      - .m2/repository/
+  variables:
+    MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+  script:
+    - cd backend
+    - mvn checkstyle:check -B
+
+backend-build:
+  stage: build
+  image: maven:3.9-eclipse-temurin-21
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
+  cache:
+    key: backend-maven
+    paths:
+      - .m2/repository/
+  variables:
+    MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+  script:
+    - cd backend
+    - mvn compile -B

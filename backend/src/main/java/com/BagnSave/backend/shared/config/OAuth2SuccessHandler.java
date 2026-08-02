@@ -1,7 +1,7 @@
 package com.BagnSave.backend.shared.config;
 
-import com.BagnSave.backend.oauth.Account;
-import com.BagnSave.backend.oauth.AccountService;
+import com.BagnSave.backend.auth.AccountService;
+import com.BagnSave.backend.auth.AuthProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -29,9 +29,10 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String name = oauth2User.getAttribute("name");
         String providerId = oauth2User.getAttribute("sub");
         
-        accountService.findOrCreateAccount(email, name, providerId, "google");
-        
-        setDefaultTargetUrl("http://localhost:5173");
+        accountService.findOrCreateAccount(email, name, providerId, AuthProvider.GOOGLE);
+
+        // Todo: replace url with frontend url (e.g. dashboard)
+        setDefaultTargetUrl("/api/user");
         super.onAuthenticationSuccess(request, response, authentication);
     }
 }

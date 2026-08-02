@@ -35,9 +35,11 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider)
                 .securityContext(context -> context.securityContextRepository(securityContextRepository))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/api/auth/**", "/oauth2/**", "/login/oauth2/**", "/error").permitAll()
+                        .requestMatchers("/", "/login", "/api/auth/**", "/oauth2/**",
+                                "/login/oauth2/**", "/error").permitAll()
                         .requestMatchers("/api/user").authenticated()
                         .requestMatchers("/api/**").permitAll()
+                        .requestMatchers("/h2-console/**").permitAll()
                         .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
@@ -46,6 +48,7 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .logoutSuccessUrl("/")
                 )
+                .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
                 .build();
     }
 

@@ -10,7 +10,7 @@ function Homepage() {
           <p className="hero-subtitle">
             The lowest prices and best routes for grocery stores across New Zealand
           </p>
-          <Link to="/select-stores" className="cta-button">
+          <Link to="/select-items" className="cta-button">
             Shop Now
           </Link>
         </div>
@@ -51,7 +51,7 @@ function Homepage() {
       <section className="cta-section">
         <h2>Ready to Save?</h2>
         <p>Create a shopping list and find incredible deals today</p>
-        <Link to="/mock/products" className="cta-button-secondary">
+        <Link to="/select-items" className="cta-button-secondary">
           Create List
         </Link>
       </section>
@@ -69,7 +69,7 @@ function Homepage() {
                 <Link to="/">Home</Link>
               </li>
               <li>
-                <Link to="/mock/products">Products</Link>
+                <Link to="/select-items">Products</Link>
               </li>
               <li>
                 <Link to="#about">About</Link>

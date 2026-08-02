@@ -1,0 +1,1 @@
+sudo docker run --name my-grocer-db -p 5432:5432 -d grocer-db-pipeline

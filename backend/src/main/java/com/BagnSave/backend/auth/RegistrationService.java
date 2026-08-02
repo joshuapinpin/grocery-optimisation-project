@@ -1,5 +1,6 @@
 package com.BagnSave.backend.auth;
 
+import com.BagnSave.backend.auth.exception.AccountAlreadyExistsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,16 +30,17 @@ public class RegistrationService {
             throw new IllegalArgumentException("Display name is required");
         }
 
-        Account account = accountRepository.findByEmail(normalizedEmail)
-                .orElseGet(Account::new);
+        // Ensure email is unique
+        if(accountRepository.existsByEmail(normalizedEmail)) {
+            throw new AccountAlreadyExistsException();
+        }
 
+        // Create and save a new account
+        Account account = new Account();
         account.setEmail(normalizedEmail);
         account.setName(normalizedName);
         account.setHashedPassword(passwordEncoder.encode(rawPassword));
-        if (account.getAuthProvider() == null) {
-            account.setAuthProvider(AuthProvider.LOCAL);
-        }
-
+        account.setAuthProvider(AuthProvider.LOCAL);
         return accountRepository.save(account);
     }
 }

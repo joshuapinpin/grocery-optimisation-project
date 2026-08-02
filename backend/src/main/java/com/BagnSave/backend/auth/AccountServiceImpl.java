@@ -17,6 +17,7 @@ public class AccountServiceImpl implements AccountService {
         String normalizedEmail = email == null ? null : email.trim().toLowerCase();
         String normalizedName = name == null ? null : name.trim();
 
+        // Ensure fields are valid
         if (normalizedEmail == null || normalizedEmail.isBlank()) {
             throw new IllegalArgumentException("Email is required");
         }

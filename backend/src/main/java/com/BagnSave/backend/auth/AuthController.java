@@ -35,6 +35,12 @@ public class AuthController {
         this.securityContextRepository = securityContextRepository;
     }
 
+    /**
+     * Registers a new user and automatically logs them in.
+     * Only ever used for manual authentication, not for OAuth2.
+     * @param request the registration request containing email, password, and display name
+     * @return ResponseEntity containing the registered account details
+     */
     @PostMapping("/register")
     public ResponseEntity<AccountDTO> register(@RequestBody RegisterRequestDTO request) {
         Account account = registrationService.register(request.getEmail(), request.getPassword(), request.getName());
@@ -42,6 +48,14 @@ public class AuthController {
                 .body(new AccountDTO(account.getId(), account.getEmail(), account.getName()));
     }
 
+    /**
+     * Authenticates a user and establishes a session.
+     * Only ever used for manual authentication, not for OAuth2.
+     * @param request the login request containing email and password
+     * @param httpRequest the HTTP request to establish the session
+     * @param httpResponse the HTTP response to establish the session
+     * @return ResponseEntity containing the authenticated account details
+     */
     @PostMapping("/login")
     public ResponseEntity<AccountDTO> login(
             @RequestBody LoginRequestDTO request,

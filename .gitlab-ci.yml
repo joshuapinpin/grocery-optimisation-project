@@ -1,12 +1,20 @@
 stages:
   - build
+  - test
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+
+.rules_default: &rules_default
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
 
 frontend-build:
   stage: build
   image: node:20
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    - if: '$CI_COMMIT_BRANCH == "main"'
+  <<: *rules_default
+  timeout: 10m
   cache:
     key: frontend-npm
     paths:
@@ -15,16 +23,20 @@ frontend-build:
     - cd frontend
     - npm ci
     - npm run build
+  artifacts:
+    paths:
+      - frontend/dist/
+    expire_in: 1 hour
 
 frontend-lint:
   stage: build
   image: node:20
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    - if: '$CI_COMMIT_BRANCH == "main"'
+  <<: *rules_default
   allow_failure: true
+  timeout: 5m
   cache:
     key: frontend-npm
+    policy: pull
     paths:
       - frontend/node_modules/
   script:
@@ -32,35 +44,40 @@ frontend-lint:
     - npm ci
     - npm run lint
 
-backend-lint:
-  stage: build
-  image: maven:3.9-eclipse-temurin-21
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    - if: '$CI_COMMIT_BRANCH == "main"'
-  allow_failure: true
-  cache:
-    key: backend-maven
-    paths:
-      - .m2/repository/
-  variables:
-    MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
-  script:
-    - cd backend
-    - mvn checkstyle:check -B
-
 backend-build:
   stage: build
   image: maven:3.9-eclipse-temurin-21
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    - if: '$CI_COMMIT_BRANCH == "main"'
+  <<: *rules_default
+  timeout: 10m
   cache:
     key: backend-maven
     paths:
       - .m2/repository/
-  variables:
-    MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
   script:
     - cd backend
     - mvn compile -B
+  artifacts:
+    paths:
+      - backend/target/
+    expire_in: 1 hour
+
+backend-test:
+  stage: test
+  image: maven:3.9-eclipse-temurin-21
+  <<: *rules_default
+  timeout: 15m
+  needs:
+    - backend-build
+  cache:
+    key: backend-maven
+    policy: pull
+    paths:
+      - .m2/repository/
+  script:
+    - cd backend
+    - mvn verify -B
+  artifacts:
+    reports:
+      junit:
+        - backend/target/surefire-reports/TEST-*.xml
+    when: always

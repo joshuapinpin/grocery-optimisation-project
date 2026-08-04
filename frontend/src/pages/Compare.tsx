@@ -33,7 +33,7 @@ function Compare() {
   }
 
   // only keep items we actually have prices for
-  items = items.filter((name: any) => priceData[name] != undefined)
+  items = items.filter((name: string) => priceData[name] != undefined)
 
   function cheapestStoreFor(name: string) {
     const row = priceData[name]

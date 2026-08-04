@@ -26,6 +26,7 @@ export default function SelectStores() {
   const [selectedStores, setSelectedStores] = useState<number[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [search, setSearch] = useState('')
 
   // Fetch all stores with pagination
   useEffect(() => {
@@ -117,6 +118,15 @@ export default function SelectStores() {
     }
   }
 
+  // derive filtered vendor groups based on the search box
+  const filteredVendorGroups = vendorGroups
+    .map(g => ({
+      ...g,
+      stores: g.stores.filter(s => s.name.toLowerCase().includes(search.toLowerCase()))
+    }))
+    .filter(g => g.stores.length > 0)
+    .map(g => (search !== '' ? { ...g, isExpanded: true } : g))
+
   const totalStores = vendorGroups.reduce((sum, g) => sum + g.stores.length, 0)
 
   return (
@@ -144,8 +154,16 @@ export default function SelectStores() {
         {!loading && !error && (
           <>
             <div className="ss-controls">
-              <button 
-                className="ss-select-all-btn" 
+              <input
+                type="text"
+                className="ss-search"
+                placeholder="Search stores..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+
+              <button
+                className="ss-select-all-btn"
                 onClick={selectAll}
               >
                 {selectedStores.length === totalStores ? 'Deselect All' : 'Select All'}
@@ -156,59 +174,63 @@ export default function SelectStores() {
             </div>
 
             <div className="ss-vendors">
-              {vendorGroups.map((vendor) => {
-                const vendorStoreIds = vendor.stores.map(s => s.id)
-                const vendorSelected = vendorStoreIds.filter(id => selectedStores.includes(id)).length
-                const isAllSelected = vendorSelected === vendor.stores.length && vendor.stores.length > 0
-                const isSomeSelected = vendorSelected > 0
+              {filteredVendorGroups.length === 0 ? (
+                <p className="ss-empty">No stores match "{search}"</p>
+              ) : (
+                filteredVendorGroups.map((vendor) => {
+                  const vendorStoreIds = vendor.stores.map(s => s.id)
+                  const vendorSelected = vendorStoreIds.filter(id => selectedStores.includes(id)).length
+                  const isAllSelected = vendorSelected === vendor.stores.length && vendor.stores.length > 0
+                  const isSomeSelected = vendorSelected > 0
 
-                return (
-                  <div key={vendor.name} className="ss-vendor-group">
-                    <button
-                      className="ss-vendor-header"
-                      onClick={() => toggleVendor(vendor.name)}
-                    >
-                      <span className="ss-vendor-toggle">
-                        {vendor.isExpanded ? '▼' : '▶'}
-                      </span>
-                      <span className="ss-vendor-name">{vendor.name}</span>
-                      <span className="ss-vendor-count">
-                        {vendorSelected}/{vendor.stores.length}
-                      </span>
+                  return (
+                    <div key={vendor.name} className="ss-vendor-group">
                       <button
-                        className={`ss-vendor-checkbox ${isAllSelected ? 'ss-vendor-checkbox--checked' : isSomeSelected ? 'ss-vendor-checkbox--partial' : ''}`}
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          toggleVendorStores(vendor.name)
-                        }}
+                        className="ss-vendor-header"
+                        onClick={() => toggleVendor(vendor.name)}
                       >
-                        {isAllSelected ? '✓' : isSomeSelected ? '−' : ''}
+                        <span className="ss-vendor-toggle">
+                          {vendor.isExpanded ? '▼' : '▶'}
+                        </span>
+                        <span className="ss-vendor-name">{vendor.name}</span>
+                        <span className="ss-vendor-count">
+                          {vendorSelected}/{vendor.stores.length}
+                        </span>
+                        <button
+                          className={`ss-vendor-checkbox ${isAllSelected ? 'ss-vendor-checkbox--checked' : isSomeSelected ? 'ss-vendor-checkbox--partial' : ''}`}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            toggleVendorStores(vendor.name)
+                          }}
+                        >
+                          {isAllSelected ? '✓' : isSomeSelected ? '−' : ''}
+                        </button>
                       </button>
-                    </button>
 
-                    {vendor.isExpanded && (
-                      <div className="ss-stores-list">
-                        {vendor.stores.map((store) => {
-                          const isSelected = selectedStores.includes(store.id)
-                          return (
-                            <label key={store.id} className="ss-store-item">
-                              <input
-                                type="checkbox"
-                                checked={isSelected}
-                                onChange={() => toggleStore(store.id)}
-                                disabled={!store.isEnabled}
-                              />
-                              <span className={`ss-store-label ${!store.isEnabled ? 'ss-store-label--disabled' : ''}`}>
-                                {store.name}
-                              </span>
-                            </label>
-                          )
-                        })}
-                      </div>
-                    )}
-                  </div>
-                )
-              })}
+                      {vendor.isExpanded && (
+                        <div className="ss-stores-list">
+                          {vendor.stores.map((store) => {
+                            const isSelected = selectedStores.includes(store.id)
+                            return (
+                              <label key={store.id} className="ss-store-item">
+                                <input
+                                  type="checkbox"
+                                  checked={isSelected}
+                                  onChange={() => toggleStore(store.id)}
+                                  disabled={!store.isEnabled}
+                                />
+                                <span className={`ss-store-label ${!store.isEnabled ? 'ss-store-label--disabled' : ''}`}>
+                                  {store.name}
+                                </span>
+                              </label>
+                            )
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  )
+                })
+              )}
             </div>
 
             {selectedStores.length > 0 && (

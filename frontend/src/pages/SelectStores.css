@@ -73,6 +73,23 @@
   flex-wrap: wrap;
 }
 
+.ss-search {
+  width: 100%;
+  max-width: 420px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--code-bg);
+  color: var(--text-h);
+  font-size: 0.95rem;
+}
+
+.ss-empty {
+  text-align: center;
+  color: var(--text);
+  padding: 2rem 1rem;
+}
+
 .ss-select-all-btn {
   padding: 0.75rem 1.5rem;
   background: var(--accent);

@@ -1,0 +1,101 @@
+stages:
+  - build
+  - test
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+
+.rules_default: &rules_default
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+frontend-build:
+  stage: build
+  image: node:20
+  tags:
+    - docker
+  <<: *rules_default
+  timeout: 10m
+  cache:
+    key: frontend-npm
+    paths:
+      - frontend/node_modules/
+  script:
+    - cd frontend
+    - npm ci
+    - npm run build
+  artifacts:
+    paths:
+      - frontend/dist/
+    expire_in: 1 hour
+
+frontend-lint:
+  stage: build
+  image: node:20
+  tags:
+    - docker
+  <<: *rules_default
+  allow_failure: true
+  timeout: 5m
+  cache:
+    key: frontend-npm
+    policy: pull
+    paths:
+      - frontend/node_modules/
+  script:
+    - cd frontend
+    - npm ci
+    - npm run lint
+
+backend-build:
+  stage: build
+  image: maven:3.9-eclipse-temurin-21
+  tags:
+    - docker
+  <<: *rules_default
+  timeout: 10m
+  cache:
+    key: backend-maven
+    paths:
+      - .m2/repository/
+  script:
+    - cd backend
+    - mvn compile -B
+  artifacts:
+    paths:
+      - backend/target/
+    expire_in: 1 hour
+
+backend-test:
+  stage: test
+  image: maven:3.9-eclipse-temurin-21
+  tags:
+    - docker
+  <<: *rules_default
+  timeout: 15m
+  needs:
+    - backend-build
+  services:
+    - postgres:16
+  variables:
+    MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+    POSTGRES_DB: testdb
+    POSTGRES_USER: testuser
+    POSTGRES_PASSWORD: testpass
+    SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/testdb
+    SPRING_DATASOURCE_USERNAME: testuser
+    SPRING_DATASOURCE_PASSWORD: testpass
+  cache:
+    key: backend-maven
+    policy: pull
+    paths:
+      - .m2/repository/
+  script:
+    - cd backend
+    - mvn verify -B
+  artifacts:
+    reports:
+      junit:
+        - backend/target/surefire-reports/TEST-*.xml
+    when: always

@@ -96,7 +96,7 @@ export default function SelectStores() {
     const vendor = vendorGroups.find(g => g.name === vendorName)
     if (!vendor) return
 
-    const vendorStoreIds = vendor.stores.map(s => s.id)
+    const vendorStoreIds = vendor.stores.filter(s => s.isEnabled).map(s => s.id)
     const allSelected = vendorStoreIds.every(id => selectedStores.includes(id))
 
     if (allSelected) {
@@ -110,7 +110,7 @@ export default function SelectStores() {
   }
 
   const selectAll = () => {
-    const allStoreIds = vendorGroups.flatMap(g => g.stores.map(s => s.id))
+    const allStoreIds = vendorGroups.flatMap(g => g.stores.filter(s => s.isEnabled).map(s => s.id))
     if (selectedStores.length === allStoreIds.length) {
       setSelectedStores([])
     } else {
@@ -127,7 +127,7 @@ export default function SelectStores() {
     .filter(g => g.stores.length > 0)
     .map(g => (search !== '' ? { ...g, isExpanded: true } : g))
 
-  const totalStores = vendorGroups.reduce((sum, g) => sum + g.stores.length, 0)
+  const totalStores = vendorGroups.reduce((sum, g) => sum + g.stores.filter(s => s.isEnabled).length, 0)
 
   return (
     <div className="ss-page">
@@ -178,9 +178,10 @@ export default function SelectStores() {
                 <p className="ss-empty">No stores match "{search}"</p>
               ) : (
                 filteredVendorGroups.map((vendor) => {
-                  const vendorStoreIds = vendor.stores.map(s => s.id)
+                  const enabledStores = vendor.stores.filter(s => s.isEnabled)
+                  const vendorStoreIds = enabledStores.map(s => s.id)
                   const vendorSelected = vendorStoreIds.filter(id => selectedStores.includes(id)).length
-                  const isAllSelected = vendorSelected === vendor.stores.length && vendor.stores.length > 0
+                  const isAllSelected = vendorSelected === enabledStores.length && enabledStores.length > 0
                   const isSomeSelected = vendorSelected > 0
 
                   return (
@@ -194,7 +195,7 @@ export default function SelectStores() {
                         </span>
                         <span className="ss-vendor-name">{vendor.name}</span>
                         <span className="ss-vendor-count">
-                          {vendorSelected}/{vendor.stores.length}
+                          {vendorSelected}/{enabledStores.length}
                         </span>
                         <button
                           className={`ss-vendor-checkbox ${isAllSelected ? 'ss-vendor-checkbox--checked' : isSomeSelected ? 'ss-vendor-checkbox--partial' : ''}`}

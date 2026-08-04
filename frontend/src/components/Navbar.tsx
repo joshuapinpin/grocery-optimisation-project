@@ -16,7 +16,7 @@ function Navbar() {
             </Link>
           </li>
           <li className="nav-item">
-            <Link to="/mock/products" className="nav-link">
+            <Link to="/select-items" className="nav-link">
               Shop
             </Link>
           </li>
@@ -28,6 +28,9 @@ function Navbar() {
         </ul>
 
         <div className="nav-actions">
+          <Link to="/register" className ="login-button">
+            Register 
+          </Link>
           <Link to="/login" className="login-button">
             Sign In
           </Link>

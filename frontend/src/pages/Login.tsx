@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import './Login.css'
 
@@ -8,7 +8,7 @@ function Login() {
   const [errorMsg, setErrorMsg] = useState('')
   const navigate = useNavigate()
 
-  function handleSubmit(e: any) {
+  function handleSubmit(e: React.SubmitEvent) {
     e.preventDefault()
     console.log(username, password)
 

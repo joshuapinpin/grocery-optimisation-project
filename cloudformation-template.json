@@ -1,0 +1,243 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "CloudFormation template for BagnSave deployment on ECS Fargate",
+  "Parameters": {
+    "DBUsername": {
+      "Type": "String",
+      "Default": "bashServiceAccount",
+      "Description": "Database username"
+    },
+    "DBPassword": {
+      "Type": "String",
+      "NoEcho": true,
+      "Description": "Database password (min 8 characters)"
+    },
+    "ECRBackendImage": {
+      "Type": "String",
+      "Description": "ECR image URL for backend (e.g., 123456789.dkr.ecr.us-east-1.amazonaws.com/bagnsave-backend:latest)"
+    },
+    "ECRFrontendImage": {
+      "Type": "String",
+      "Description": "ECR image URL for frontend (e.g., 123456789.dkr.ecr.us-east-1.amazonaws.com/bagnsave-frontend:latest)"
+    }
+  },
+  "Resources": {
+    "BagnSaveVPC": {
+      "Type": "AWS::EC2::VPC",
+      "Properties": {
+        "CidrBlock": "10.0.0.0/16",
+        "EnableDnsHostnames": true,
+        "EnableDnsSupport": true,
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "BagnSaveVPC"
+          }
+        ]
+      }
+    },
+    "PublicSubnet1": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": {
+          "Ref": "BagnSaveVPC"
+        },
+        "CidrBlock": "10.0.1.0/24",
+        "AvailabilityZone": {
+          "Fn::Select": [
+            0,
+            {
+              "Fn::GetAZs": ""
+            }
+          ]
+        }
+      }
+    },
+    "PublicSubnet2": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": {
+          "Ref": "BagnSaveVPC"
+        },
+        "CidrBlock": "10.0.2.0/24",
+        "AvailabilityZone": {
+          "Fn::Select": [
+            1,
+            {
+              "Fn::GetAZs": ""
+            }
+          ]
+        }
+      }
+    },
+    "PrivateSubnet1": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": {
+          "Ref": "BagnSaveVPC"
+        },
+        "CidrBlock": "10.0.11.0/24",
+        "AvailabilityZone": {
+          "Fn::Select": [
+            0,
+            {
+              "Fn::GetAZs": ""
+            }
+          ]
+        }
+      }
+    },
+    "PrivateSubnet2": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": {
+          "Ref": "BagnSaveVPC"
+        },
+        "CidrBlock": "10.0.12.0/24",
+        "AvailabilityZone": {
+          "Fn::Select": [
+            1,
+            {
+              "Fn::GetAZs": ""
+            }
+          ]
+        }
+      }
+    },
+    "DBSubnetGroup": {
+      "Type": "AWS::RDS::DBSubnetGroup",
+      "Properties": {
+        "DBSubnetGroupDescription": "Subnet group for BagnSave database",
+        "SubnetIds": [
+          {
+            "Ref": "PrivateSubnet1"
+          },
+          {
+            "Ref": "PrivateSubnet2"
+          }
+        ]
+      }
+    },
+    "DBSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Security group for RDS database",
+        "VpcId": {
+          "Ref": "BagnSaveVPC"
+        },
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 5432,
+            "ToPort": 5432,
+            "SourceSecurityGroupId": {
+              "Ref": "ECSSecurityGroup"
+            }
+          }
+        ]
+      }
+    },
+    "ECSSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Security group for ECS tasks",
+        "VpcId": {
+          "Ref": "BagnSaveVPC"
+        },
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 80,
+            "ToPort": 80,
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 8080,
+            "ToPort": 8080,
+            "CidrIp": "0.0.0.0/0"
+          }
+        ]
+      }
+    },
+    "BagnSaveDatabase": {
+      "Type": "AWS::RDS::DBInstance",
+      "Properties": {
+        "DBInstanceIdentifier": "bagnsave-db",
+        "Engine": "postgres",
+        "EngineVersion": "17.1",
+        "DBInstanceClass": "db.t3.micro",
+        "AllocatedStorage": "20",
+        "StorageType": "gp3",
+        "MasterUsername": {
+          "Ref": "DBUsername"
+        },
+        "MasterUserPassword": {
+          "Ref": "DBPassword"
+        },
+        "DBName": "bagnsave_db_v2",
+        "DBSubnetGroupName": {
+          "Ref": "DBSubnetGroup"
+        },
+        "VPCSecurityGroups": [
+          {
+            "Ref": "DBSecurityGroup"
+          }
+        ],
+        "BackupRetentionPeriod": 7,
+        "PreferredBackupWindow": "03:00-04:00",
+        "PreferredMaintenanceWindow": "sun:04:00-sun:05:00"
+      }
+    },
+    "ECSCluster": {
+      "Type": "AWS::ECS::Cluster",
+      "Properties": {
+        "ClusterName": "bagnsave-cluster",
+        "ClusterSettings": [
+          {
+            "Name": "containerInsights",
+            "Value": "enabled"
+          }
+        ]
+      }
+    },
+    "ECSTaskExecutionRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+        ]
+      }
+    }
+  },
+  "Outputs": {
+    "ClusterName": {
+      "Value": {
+        "Ref": "ECSCluster"
+      },
+      "Description": "ECS Cluster Name"
+    },
+    "DatabaseEndpoint": {
+      "Value": {
+        "Fn::GetAtt": [
+          "BagnSaveDatabase",
+          "Endpoint.Address"
+        ]
+      },
+      "Description": "RDS Database Endpoint"
+    }
+  }
+}
+

@@ -28,6 +28,7 @@ public class AccountServiceImpl implements AccountService {
             throw new IllegalArgumentException("Name is required");
         }
 
+        // Attempt to find an existing account by OAuth provider ID or email
         Account account = accountRepository.findByAuthProviderId(oauthProviderId)
                 .orElseGet(() -> accountRepository.findByEmail(normalizedEmail)
                         .map(existing -> {

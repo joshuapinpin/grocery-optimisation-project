@@ -29,7 +29,19 @@ public class AccountServiceImpl implements AccountService {
         }
 
         Account account = accountRepository.findByAuthProviderId(oauthProviderId)
-                .orElseGet(() -> accountRepository.findByEmail(normalizedEmail).orElseGet(Account::new));
+                .orElseGet(() -> accountRepository.findByEmail(normalizedEmail)
+                        .map(existing -> {
+                            if (existing.getAuthProvider() == AuthProvider.LOCAL
+                                    && existing.getHashedPassword() != null
+                                    && !existing.getHashedPassword().isBlank()) {
+                                // Explicit: linking a Google identity to an existing local account.
+                                // Logged for audit purposes since this silently grants OAuth access
+                                // to a password-protected account.
+                                System.out.println("Linking Google OAuth to existing local account: " + normalizedEmail);
+                            }
+                            return existing;
+                        })
+                        .orElseGet(Account::new));
 
         // Update the account details with the provided information
         account.setEmail(normalizedEmail);

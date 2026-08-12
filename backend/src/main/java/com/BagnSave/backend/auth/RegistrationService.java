@@ -1,6 +1,7 @@
 package com.BagnSave.backend.auth;
 
 import com.BagnSave.backend.auth.exception.AccountAlreadyExistsException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +42,13 @@ public class RegistrationService {
         account.setName(normalizedName);
         account.setHashedPassword(passwordEncoder.encode(rawPassword));
         account.setAuthProvider(AuthProvider.LOCAL);
-        return accountRepository.save(account);
+
+        // Save and handle possible race-condition uniqueness violation
+        try{
+            return accountRepository.save(account);
+        } catch(DataIntegrityViolationException e){
+            throw new AccountAlreadyExistsException();
+        }
+
     }
 }

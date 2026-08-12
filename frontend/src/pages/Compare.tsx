@@ -4,7 +4,7 @@ import './Compare.css'
 const stores = ['Woolworths', 'New World', "Pak'nSave"]
 
 // mock prices, swap for /api/prices later
-const priceData: any = {
+const priceData: Record<string, Record<string, number>> = {
   'Milk 2L': { Woolworths: 4.45, 'New World': 5.0, "Pak'nSave": 4.0 },
   'Cheese Block 1kg': { Woolworths: 14.5, 'New World': 15.2, "Pak'nSave": 13.49 },
   'Butter 500g': { Woolworths: 7.5, 'New World': 7.99, "Pak'nSave": 6.99 },
@@ -27,15 +27,15 @@ function Compare() {
   const navigate = useNavigate()
 
   const itemsParam = searchParams.get('items')
-  let items: any = []
+  let items: string[] = []
   if (itemsParam != null && itemsParam != '') {
     items = itemsParam.split(',')
   }
 
   // only keep items we actually have prices for
-  items = items.filter((name: any) => priceData[name] != undefined)
+  items = items.filter((name: string) => priceData[name] != undefined)
 
-  function cheapestStoreFor(name: any) {
+  function cheapestStoreFor(name: string) {
     const row = priceData[name]
     let best = stores[0]
     for (let i = 1; i < stores.length; i++) {
@@ -46,7 +46,7 @@ function Compare() {
     return best
   }
 
-  function totalFor(store: any) {
+  function totalFor(store: string) {
     let total = 0
     for (let i = 0; i < items.length; i++) {
       total = total + priceData[items[i]][store]
@@ -123,7 +123,7 @@ function Compare() {
             </tr>
           </thead>
           <tbody>
-            {items.map((name: any) => {
+            {items.map((name: string) => {
               const best = cheapestStoreFor(name)
               return (
                 <tr key={name}>

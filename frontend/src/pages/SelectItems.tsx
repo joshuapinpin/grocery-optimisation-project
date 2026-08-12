@@ -24,19 +24,19 @@ const allItems = [
 const categories = ['All', 'Dairy', 'Bakery', 'Produce', 'Meat', 'Pantry']
 
 function SelectItems() {
-  const [picked, setPicked] = useState<any>([])
+  const [picked, setPicked] = useState<string[]>([])
   const [search, setSearch] = useState('')
   const [activeCategory, setActiveCategory] = useState('All')
   const [errorMsg, setErrorMsg] = useState('')
   const navigate = useNavigate()
 
-  function isPicked(name: any) {
+  function isPicked(name: string) {
     return picked.indexOf(name) != -1
   }
 
-  function togglePick(name: any) {
+  function togglePick(name: string) {
     if (isPicked(name)) {
-      const newList = picked.filter((x: any) => x != name)
+      const newList = picked.filter((x: string) => x != name)
       setPicked(newList)
     } else {
       setPicked([...picked, name])

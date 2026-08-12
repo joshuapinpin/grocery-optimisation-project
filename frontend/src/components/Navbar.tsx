@@ -28,8 +28,8 @@ function Navbar() {
         </ul>
 
         <div className="nav-actions">
-          <Link to="/register" className="login-button">
-            Register
+          <Link to="/register" className ="login-button">
+            Register 
           </Link>
           <Link to="/login" className="login-button">
             Sign In

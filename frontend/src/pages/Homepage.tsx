@@ -51,7 +51,7 @@ function Homepage() {
       <section className="cta-section">
         <h2>Ready to Save?</h2>
         <p>Create a shopping list and find incredible deals today</p>
-        <Link to="/select-items" className="cta-button-secondary">
+        <Link to="select-items" className="cta-button-secondary">
           Create List
         </Link>
       </section>

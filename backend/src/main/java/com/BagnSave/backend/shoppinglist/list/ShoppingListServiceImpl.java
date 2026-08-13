@@ -68,7 +68,7 @@ public class ShoppingListServiceImpl implements ShoppingListService {
                 shoppingList.getId(),
                 shoppingList.getAccount().getId(),
                 shoppingList.getName(),
-                shoppingList.getProducts().stream()
+                shoppingList.getItems().stream()
                         .map(item -> new ShoppingListItemDTO(
                                 item.getId(),
                                 item.getProductRef(),

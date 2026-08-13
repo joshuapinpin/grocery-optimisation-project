@@ -38,7 +38,7 @@ public class ShoppingList {
     private Instant updatedAt = Instant.now();
 
     @OneToMany(mappedBy = "shoppingList", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ShoppingListItem> products = new ArrayList<>();
+    private List<ShoppingListItem> items = new ArrayList<>();
 
     @PreUpdate
     public void touch(){

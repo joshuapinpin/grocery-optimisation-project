@@ -1,6 +1,7 @@
-package com.BagnSave.backend.shoppinglist;
+package com.BagnSave.backend.shoppinglist.list;
 
 import com.BagnSave.backend.auth.Account;
+import com.BagnSave.backend.shoppinglist.item.ShoppingListItem;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

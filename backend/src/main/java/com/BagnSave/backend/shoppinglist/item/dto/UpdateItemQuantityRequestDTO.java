@@ -1,4 +1,4 @@
-package com.BagnSave.backend.shoppinglist.dto.item;
+package com.BagnSave.backend.shoppinglist.item.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.BagnSave.backend.shoppinglist;
+package com.BagnSave.backend.shoppinglist.list;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

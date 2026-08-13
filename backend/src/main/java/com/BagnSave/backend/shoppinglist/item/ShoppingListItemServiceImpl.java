@@ -9,9 +9,11 @@ import com.BagnSave.backend.shoppinglist.item.dto.ShoppingListItemDTO;
 import com.BagnSave.backend.shoppinglist.item.dto.UpdateItemQuantityRequestDTO;
 import com.BagnSave.backend.shoppinglist.list.ShoppingList;
 import com.BagnSave.backend.shoppinglist.list.ShoppingListRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class ShoppingListItemServiceImpl implements ShoppingListItemService{
 
     private final ShoppingListRepository shoppingListRepository;

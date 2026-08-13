@@ -1,6 +1,7 @@
 package com.BagnSave.backend.shoppinglist.list;
 
 import com.BagnSave.backend.auth.Account;
+import com.BagnSave.backend.shoppinglist.exception.DuplicateListNameException;
 import com.BagnSave.backend.shoppinglist.item.dto.ShoppingListItemDTO;
 import com.BagnSave.backend.shoppinglist.list.dto.CreateListRequestDTO;
 import com.BagnSave.backend.shoppinglist.list.dto.RenameListRequestDTO;
@@ -35,6 +36,9 @@ public class ShoppingListServiceImpl implements ShoppingListService {
 
     @Override
     public ShoppingListDTO createList(Account account, CreateListRequestDTO request) {
+        if (shoppingListRepository.existsByAccountIdAndName(account.getId(), request.getName())) {
+            throw new DuplicateListNameException();
+        }
         ShoppingList shoppingList = new ShoppingList();
         shoppingList.setAccount(account);
         shoppingList.setName(request.getName());

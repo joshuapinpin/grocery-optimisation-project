@@ -1,4 +1,4 @@
-package com.BagnSave.backend.shoppinglist.dto;
+package com.BagnSave.backend.shoppinglist.dto.list;
 
 import com.BagnSave.backend.product.dto.ProductDTO;
 import lombok.AllArgsConstructor;

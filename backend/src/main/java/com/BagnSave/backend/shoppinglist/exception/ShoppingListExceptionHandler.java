@@ -4,5 +4,5 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class ShoppingListExceptionHandler {
-    // You can add exception handling methods here for ShoppingList-related exceptions
+    // Todo: You can add exception handling methods here for ShoppingList-related exceptions
 }

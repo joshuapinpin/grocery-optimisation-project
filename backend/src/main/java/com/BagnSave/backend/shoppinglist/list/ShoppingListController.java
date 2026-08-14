@@ -3,6 +3,7 @@ package com.BagnSave.backend.shoppinglist.list;
 import com.BagnSave.backend.auth.Account;
 import com.BagnSave.backend.auth.AccountService;
 import com.BagnSave.backend.auth.AuthProvider;
+import com.BagnSave.backend.auth.AuthenticatedAccountResolver;
 import com.BagnSave.backend.auth.userdetailsservice.CustomUserDetails;
 import com.BagnSave.backend.shoppinglist.list.dto.CreateListRequestDTO;
 import com.BagnSave.backend.shoppinglist.list.dto.RenameListRequestDTO;
@@ -20,22 +21,22 @@ import java.util.List;
 public class ShoppingListController {
 
     private final ShoppingListService shoppingListService;
-    private final AccountService accountService;
+    private final AuthenticatedAccountResolver accountResolver;
 
-    public ShoppingListController(ShoppingListService shoppingListService, AccountService accountService) {
+    public ShoppingListController(ShoppingListService shoppingListService, AuthenticatedAccountResolver accountResolver) {
         this.shoppingListService = shoppingListService;
-        this.accountService = accountService;
+        this.accountResolver = accountResolver;
     }
 
     @GetMapping
     public List<ShoppingListDTO> getAllShoppingLists(Authentication authentication) {
-        Account account = resolveAccount(authentication);
+        Account account = accountResolver.resolve(authentication);
         return shoppingListService.getListsForAccount(account);
     }
 
     @GetMapping("/{listId}")
     public ShoppingListDTO getShoppingList(@PathVariable Long listId, Authentication authentication) {
-        Account account = resolveAccount(authentication);
+        Account account = accountResolver.resolve(authentication);
         return shoppingListService.getList(account, listId);
     }
 
@@ -44,7 +45,7 @@ public class ShoppingListController {
             @RequestBody CreateListRequestDTO request,
             Authentication authentication
     ) {
-        Account account = resolveAccount(authentication);
+        Account account = accountResolver.resolve(authentication);
         ShoppingListDTO createdList = shoppingListService.createList(account, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdList);
     }
@@ -55,33 +56,15 @@ public class ShoppingListController {
             @RequestBody RenameListRequestDTO request,
             Authentication authentication
     ) {
-        Account account = resolveAccount(authentication);
+        Account account = accountResolver.resolve(authentication);
         ShoppingListDTO renamedList = shoppingListService.renameList(account, listId, request);
         return ResponseEntity.ok(renamedList);
     }
 
     @DeleteMapping("/{listId}")
     public ResponseEntity<Void> deleteShoppingList(@PathVariable Long listId, Authentication authentication) {
-        Account account = resolveAccount(authentication);
+        Account account = accountResolver.resolve(authentication);
         shoppingListService.deleteList(account, listId);
         return ResponseEntity.noContent().build();
-    }
-
-    // --- HELPER METHODS ---
-
-    private Account resolveAccount(Authentication authentication) {
-        Object principal = authentication.getPrincipal();
-
-        // Check if the account is from manual authentication (CustomUserDetails)
-        if (principal instanceof CustomUserDetails customUserDetails) {
-            return customUserDetails.getAccount();
-        }
-
-        // If not, it must be from OAuth2 authentication (OAuth2User)
-        OAuth2User oauth2User = (OAuth2User) principal;
-        String email = oauth2User.getAttribute("email");
-        String name = oauth2User.getAttribute("name");
-        String providerId = oauth2User.getAttribute("sub");
-        return accountService.findOrCreateAccount(email, name, providerId, AuthProvider.GOOGLE);
     }
 }

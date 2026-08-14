@@ -12,10 +12,11 @@ import com.BagnSave.backend.auth.userdetailsservice.CustomUserDetails;
 @RestController
 @RequestMapping("/api/user")
 public class AccountController {
-    private final AccountService accountService;
 
-    public AccountController(AccountService accountService) {
-        this.accountService = accountService;
+    private final AuthenticatedAccountResolver authenticatedAccountResolver;
+
+    public AccountController(AuthenticatedAccountResolver authenticatedAccountResolver) {
+        this.authenticatedAccountResolver = authenticatedAccountResolver;
     }
 
     @GetMapping
@@ -23,19 +24,7 @@ public class AccountController {
         if (authentication == null || !authentication.isAuthenticated()) {
             return null;
         }
-
-        Account account;
-        Object principal = authentication.getPrincipal();
-        if (principal instanceof CustomUserDetails customUserDetails) {
-            account = customUserDetails.getAccount();
-        } else {
-            OAuth2User oauth2User = (OAuth2User) principal;
-            String email = oauth2User.getAttribute("email");
-            String name = oauth2User.getAttribute("name");
-            String providerId = oauth2User.getAttribute("sub");
-            account = accountService.findOrCreateAccount(email, name, providerId, AuthProvider.GOOGLE);
-        }
-
+        Account account = authenticatedAccountResolver.resolve(authentication);
         return new AccountDTO(account.getId(), account.getEmail(), account.getName());
     }
 }

@@ -3,29 +3,43 @@ import { Link, useNavigate } from 'react-router-dom'
 import './Register.css'
 
 function Register() {
-  const [username, setUsername] = useState('')
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPass, setConfirmPass] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
   const navigate = useNavigate()
 
-  function handleSubmit(e: React.SubmitEvent) {
+  async function handleSubmit(e: React.SubmitEvent) {
     e.preventDefault()
-    console.log(username, password)
+    console.log(name, password)
 
-    if (password != confirmPass) {
-      setErrorMsg("passwords dont match")
-      return
+    if (password != confirmPass) {setErrorMsg("passwords dont match"); return}
+    if (name == '' || password == '' || email == '') {setErrorMsg("please fill everything in"); return}
+
+
+    try{
+      const res = await fetch('api/auth/register',{
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include', // needed to receive the session cookie
+        body: JSON.stringify({
+          email: name,
+          password: password,
+          name: name
+        })
+      })
+
+      if(!res.ok){
+        const err = await res.json().catch(() => null)
+        setErrorMsg(err?.error ?? 'registration failed')
+        return
+      }
+      navigate('/login')
     }
-
-    if (username == '' || password == '') {
-      setErrorMsg("please fill everything in")
-      return
+    catch{
+      setErrorMsg('could not reach server')
     }
-
-    setErrorMsg('')
-    // TODO connect to backend later
-    navigate('/login')
   }
 
   return (
@@ -37,11 +51,20 @@ function Register() {
         <form onSubmit={handleSubmit} className='register-form'>
           <input
             type='text'
-            placeholder='Username'
-            value={username}
+            placeholder='Name'
+            value={name}
             onChange={(e) => {
-              setUsername(e.target.value)
+              setName(e.target.value)
             }}
+          />
+
+          <input
+              type='email'
+              placeholder='Email'
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value)
+              }}
           />
 
           <input

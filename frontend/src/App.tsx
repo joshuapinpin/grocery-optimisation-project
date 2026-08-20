@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route} from 'react-router-dom'
+import {AuthProvider} from './context/AuthContext'
 import Navbar from './components/Navbar'
 import Homepage from './pages/Homepage'
 import MockProducts from './pages/MockProducts'
@@ -11,20 +12,22 @@ import NotFound from './pages/NotFound'
 
 function App() {
   return (
-    <BrowserRouter>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Homepage />} />
-        <Route path="/mock-products" element={<MockProducts />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/select-stores" element={<SelectStores />} />
-        <Route path="/select-items" element={<SelectItems />} />
-        <Route path="/compare" element={<Compare />} />
-        <Route path="/register" element={<Register />} />
-        {/* keep this last, it matches anything the routes above didn't */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Homepage />} />
+            <Route path="/mock-products" element={<MockProducts />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/select-stores" element={<SelectStores />} />
+            <Route path="/select-items" element={<SelectItems />} />
+            <Route path="/compare" element={<Compare />} />
+            <Route path="/register" element={<Register />} />
+            {/* keep this last, it matches anything the routes above didn't */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
   )
 }
 

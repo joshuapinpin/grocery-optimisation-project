@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import './Login.css'
 
 function Login() {
@@ -7,10 +8,10 @@ function Login() {
   const [password, setPassword] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
   const navigate = useNavigate()
+  const { refreshUser } = useAuth()
 
   async function handleSubmit(e: React.SubmitEvent) {
     e.preventDefault()
-    console.log(email, password)
 
     if (email == '' || password == '') { setErrorMsg('please fill everything in'); return}
 
@@ -22,7 +23,9 @@ function Login() {
         body: JSON.stringify({ email: email, password: password })
       })
 
-      if(!res.ok){ setErrorMsg('invalid email or password'); return}
+      if(!res.ok) { setErrorMsg('invalid email or password'); return }
+
+      await refreshUser()
       navigate('/')
     } catch{
       setErrorMsg('could not reach server')
@@ -37,25 +40,18 @@ function Login() {
 
         <form onSubmit={handleSubmit} className='login-form'>
           <input
-            type='text'
-            placeholder='Email'
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value)
-            }}
+              type='text'
+              placeholder='Email'
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
           />
-
           <input
-            type='password'
-            placeholder='Password'
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value)
-            }}
+              type='password'
+              placeholder='Password'
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
           />
-
           {errorMsg != '' ? <p className='login-error'>{errorMsg}</p> : null}
-
           <button type='submit' className='login-button'>Sign in</button>
         </form>
 

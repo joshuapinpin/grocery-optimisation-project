@@ -45,7 +45,7 @@ public class AuthController {
     public ResponseEntity<AccountDTO> register(@RequestBody RegisterRequestDTO request) {
         Account account = registrationService.register(request.getEmail(), request.getPassword(), request.getName());
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new AccountDTO(account.getId(), account.getEmail(), account.getName()));
+                .body(new AccountDTO(account.getId(), account.getEmail(), account.getName(), account.getAuthProvider()));
     }
 
     /**
@@ -71,7 +71,15 @@ public class AuthController {
 
         CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
         Account account = principal.getAccount();
-        return ResponseEntity.ok(new AccountDTO(account.getId(), account.getEmail(), account.getName()));
+        return ResponseEntity.ok(
+                new AccountDTO(account.getId(), account.getEmail(), account.getName(), account.getAuthProvider()));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletRequest request, HttpServletResponse response) {
+        SecurityContextHolder.clearContext();
+        request.getSession().invalidate();
+        return ResponseEntity.ok().build();
     }
 }
 

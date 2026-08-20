@@ -1,6 +1,7 @@
 package com.BagnSave.backend.shared.config;
 
 import com.BagnSave.backend.auth.userdetailsservice.CustomUserDetailsService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,16 +36,19 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider)
                 .securityContext(context -> context.securityContextRepository(securityContextRepository))
                 .authorizeHttpRequests(auth -> auth
-                        // 1. Public endpoints
+                        // Protect logout endpoint
+                        .requestMatchers("api/auth/logout").authenticated()
+
+                        // Public endpoints and OAuth
                         .requestMatchers("/", "/login", "/error").permitAll()
                         .requestMatchers("/api/auth/**", "/oauth2/**", "/login/oauth2/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll() // H2 for local testing
 
-                        // 2. Public data
+                        // Public data
                         .requestMatchers("/api/stores/**", "/api/vendors/**").permitAll()
                         .requestMatchers("/api/products/**", "/api/prices/**").permitAll()
 
-                        // 3. All other requests require authentication
+                        // All other requests require authentication
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
@@ -52,7 +56,11 @@ public class SecurityConfig {
                 )
                 .logout(logout -> logout
                         .logoutUrl("/api/auth/logout")
-                        .logoutSuccessUrl("/")
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            response.setStatus(HttpServletResponse.SC_OK);
+                        })
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
                 )
                 .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
                 .build();

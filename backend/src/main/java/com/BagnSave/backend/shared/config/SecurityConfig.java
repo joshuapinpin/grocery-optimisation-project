@@ -35,17 +35,23 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider)
                 .securityContext(context -> context.securityContextRepository(securityContextRepository))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/api/auth/**", "/oauth2/**",
-                                "/login/oauth2/**", "/error").permitAll()
-                        .requestMatchers("/api/user").authenticated()
-                        .requestMatchers("/api/**").permitAll()
-                        .requestMatchers("/h2-console/**").permitAll()
-                        .anyRequest().permitAll()
+                        // 1. Public endpoints
+                        .requestMatchers("/", "/login", "/error").permitAll()
+                        .requestMatchers("/api/auth/**", "/oauth2/**", "/login/oauth2/**").permitAll()
+                        .requestMatchers("/h2-console/**").permitAll() // H2 for local testing
+
+                        // 2. Public data
+                        .requestMatchers("/api/stores/**", "/api/vendors/**").permitAll()
+                        .requestMatchers("/api/products/**", "/api/prices/**").permitAll()
+
+                        // 3. All other requests require authentication
+                        .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .successHandler(oauth2SuccessHandler)
                 )
                 .logout(logout -> logout
+                        .logoutUrl("/api/auth/logout")
                         .logoutSuccessUrl("/")
                 )
                 .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))

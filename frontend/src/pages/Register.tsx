@@ -24,7 +24,7 @@ function Register() {
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include', // needed to receive the session cookie
         body: JSON.stringify({
-          email: name,
+          email: email,
           password: password,
           name: name
         })

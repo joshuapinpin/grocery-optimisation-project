@@ -3,23 +3,30 @@ import { Link, useNavigate } from 'react-router-dom'
 import './Login.css'
 
 function Login() {
-  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
   const navigate = useNavigate()
 
-  function handleSubmit(e: React.SubmitEvent) {
+  async function handleSubmit(e: React.SubmitEvent) {
     e.preventDefault()
-    console.log(username, password)
+    console.log(email, password)
 
-    if (username == '' || password == '') {
-      setErrorMsg('please fill everything in')
-      return
+    if (email == '' || password == '') { setErrorMsg('please fill everything in'); return}
+
+    try{
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ email: email, password: password })
+      })
+
+      if(!res.ok){ setErrorMsg('invalid email or password'); return}
+      navigate('/')
+    } catch{
+      setErrorMsg('could not reach server')
     }
-
-    setErrorMsg('')
-    // TODO connect to backend later
-    navigate('/')
   }
 
   return (
@@ -31,10 +38,10 @@ function Login() {
         <form onSubmit={handleSubmit} className='login-form'>
           <input
             type='text'
-            placeholder='Username'
-            value={username}
+            placeholder='Email'
+            value={email}
             onChange={(e) => {
-              setUsername(e.target.value)
+              setEmail(e.target.value)
             }}
           />
 

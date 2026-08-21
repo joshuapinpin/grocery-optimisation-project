@@ -42,8 +42,16 @@ public class AuthController {
      * @return ResponseEntity containing the registered account details
      */
     @PostMapping("/register")
-    public ResponseEntity<AccountDTO> register(@RequestBody RegisterRequestDTO request) {
-        Account account = registrationService.register(request.getEmail(), request.getPassword(), request.getName());
+    public ResponseEntity<AccountDTO> register(
+            @RequestBody RegisterRequestDTO request,
+            HttpServletRequest httpRequest,
+            HttpServletResponse httpResponse) {
+        Account account = registrationService.register(
+                request.getEmail(), request.getPassword(), request.getName());
+
+        // Auto login after registration
+        authenticateAndSaveSession(account.getEmail(), request.getPassword(), httpRequest, httpResponse);
+
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new AccountDTO(account.getId(), account.getEmail(), account.getName(), account.getAuthProvider()));
     }
@@ -61,13 +69,9 @@ public class AuthController {
             @RequestBody LoginRequestDTO request,
             HttpServletRequest httpRequest,
             HttpServletResponse httpResponse) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-
-        SecurityContext context = SecurityContextHolder.createEmptyContext();
-        context.setAuthentication(authentication);
-        SecurityContextHolder.setContext(context);
-        securityContextRepository.saveContext(context, httpRequest, httpResponse);
+        // Authenticate existing user and establish session
+        Authentication authentication = authenticateAndSaveSession(
+                request.getEmail(), request.getPassword(), httpRequest, httpResponse);
 
         CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
         Account account = principal.getAccount();
@@ -80,6 +84,21 @@ public class AuthController {
         SecurityContextHolder.clearContext();
         request.getSession().invalidate();
         return ResponseEntity.ok().build();
+    }
+
+    // Shared helper method
+    private Authentication authenticateAndSaveSession(
+            String email, String password, HttpServletRequest request, HttpServletResponse response) {
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(email, password));
+
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        context.setAuthentication(authentication);
+        SecurityContextHolder.setContext(context);
+        securityContextRepository.saveContext(context, request, response);
+
+        return authentication;
     }
 }
 

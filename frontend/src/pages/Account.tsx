@@ -35,8 +35,9 @@ function Account() {
                     <h2>Profile</h2>
                     <p><strong>Name:</strong> {user?.name}</p>
                     <p><strong>Email:</strong> {user?.email}</p>
-                    {/* TODO: once AccountDTO exposes authProvider, show a
-             "Signed in with Google" badge and hide password fields */}
+                    {user?.authProvider === 'GOOGLE' && (
+                        <span className="oauth-badge">Signed in with Google</span>
+                    )}
                     <button className="account-logout-btn" onClick={handleLogout}>
                         Log Out
                     </button>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import './Register.css'
+import {useAuth} from "../context/AuthContext.tsx";
 
 function Register() {
   const [name, setName] = useState('')
@@ -9,6 +10,7 @@ function Register() {
   const [confirmPass, setConfirmPass] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
   const navigate = useNavigate()
+  const { refreshUser } = useAuth()
 
   async function handleSubmit(e: React.SubmitEvent) {
     e.preventDefault()
@@ -35,7 +37,8 @@ function Register() {
         setErrorMsg(err?.error ?? 'registration failed')
         return
       }
-      navigate('/login')
+      await refreshUser()   // pulls the now-authenticated session into context
+      navigate('/') // redirects straight to home
     }
     catch{
       setErrorMsg('could not reach server')

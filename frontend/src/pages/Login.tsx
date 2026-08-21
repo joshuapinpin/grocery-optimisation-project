@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import './Login.css'
+import GoogleSignInButton from '../components/GoogleSignInButton'
 
 function Login() {
   const [email, setEmail] = useState('')
@@ -54,6 +55,11 @@ function Login() {
           {errorMsg != '' ? <p className='login-error'>{errorMsg}</p> : null}
           <button type='submit' className='login-button'>Sign in</button>
         </form>
+
+        <div className='login-divider'>
+          <span>or</span>
+        </div>
+        <GoogleSignInButton label='Sign in with Google' />
 
         <p className='login-register-link'>
           Don't have an account? <Link to='/register'>Create one</Link>

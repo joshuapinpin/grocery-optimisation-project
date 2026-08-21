@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import './Register.css'
 import {useAuth} from "../context/AuthContext.tsx";
+import GoogleSignInButton from '../components/GoogleSignInButton'
 
 function Register() {
   const [name, setName] = useState('')
@@ -92,6 +93,11 @@ function Register() {
 
           <button type='submit' className='register-button'>Register</button>
         </form>
+
+        <div className='login-divider'>
+          <span>or</span>
+        </div>
+        <GoogleSignInButton label='Sign up with Google' />
 
         <p className='register-login-link'>
           Already have an account? <Link to='/login'>Sign in</Link>

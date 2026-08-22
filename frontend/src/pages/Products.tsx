@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import './Products.css'
+import { apiFetch } from '../api'
 
 interface Store {
   id: number
@@ -65,17 +66,17 @@ export default function Products() {
     const fetchData = async () => {
       try {
         // Fetch products (paginated, get first 100)
-        const productsRes = await fetch('/api/products?page=0&size=100')
+        const productsRes = await apiFetch('/products?page=0&size=100')
         const productsData = await productsRes.json()
         const productsList: ProductData[] = productsData.content || []
 
         // Fetch prices (paginated, get first 100)
-        const pricesRes = await fetch('/api/prices?page=0&size=100')
+        const pricesRes = await apiFetch('/prices?page=0&size=100')
         const pricesData = await pricesRes.json()
         const pricesList: Price[] = pricesData.content || []
 
         // Fetch stores
-        const storesRes = await fetch('/api/stores/all')
+        const storesRes = await apiFetch('/stores/all')
         const storesList: Store[] = await storesRes.json()
 
         // Create a map of stores for quick lookup

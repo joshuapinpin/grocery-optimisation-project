@@ -1,7 +1,7 @@
 package com.BagnSave.backend.barcode;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -19,10 +19,8 @@ import lombok.Getter;
 @Table(name = "public_barcodes")
 public class Barcode {
     
-   @Id
+   @EmbeddedId
    @EqualsAndHashCode.Include
    @ToString.Include
-   private String barcode; 
-
-   private Integer productId;
+   private BarcodeId id;
 }

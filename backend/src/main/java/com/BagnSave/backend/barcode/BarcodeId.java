@@ -15,5 +15,5 @@ import java.io.Serializable;
 public class BarcodeId implements Serializable {
 
     private Integer productId;
-    private Integer barcodeId;
+    private String barcode;
 }

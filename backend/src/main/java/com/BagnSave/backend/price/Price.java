@@ -10,8 +10,6 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.Getter;
 
-import java.time.OffsetDateTime;
-
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true)
@@ -34,5 +32,4 @@ public class Price {
     private Integer multibuyQuantity;
     private Integer clubMultibuyPriceCent;
     private Integer clubMultibuyQuantity;
-    private OffsetDateTime updatedAt;
 }

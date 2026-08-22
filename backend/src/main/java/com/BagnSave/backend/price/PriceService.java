@@ -22,6 +22,7 @@ public class PriceService {
 
     private PriceDTO toDTO(Price price) {
         return new PriceDTO(
+            price.getId().getUpdatedAt(),
             price.getId().getStoreId(), 
             price.getId().getProductId(),
             price.getOriginalPriceCent(),
@@ -31,8 +32,7 @@ public class PriceService {
             price.getMultibuyPriceCent(),
             price.getMultibuyQuantity(),
             price.getClubMultibuyPriceCent(),
-            price.getClubMultibuyQuantity(),
-            price.getUpdatedAt()
+            price.getClubMultibuyQuantity()
         );
     }
 }

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import java.time.OffsetDateTime;
 
 import java.io.Serializable;
 
@@ -15,6 +16,8 @@ import java.io.Serializable;
 @Embeddable
 public class PriceId implements Serializable {
 
+    private OffsetDateTime updatedAt;
     private Integer storeId;
     private Integer productId;
+    
 }

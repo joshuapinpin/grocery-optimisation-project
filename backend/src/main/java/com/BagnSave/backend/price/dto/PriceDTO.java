@@ -5,6 +5,7 @@ import lombok.Value;
 
 @Value
 public class PriceDTO {
+    OffsetDateTime updatedAt;
     Integer storeId;
     Integer productId;
     Integer originalPriceCent;
@@ -15,5 +16,4 @@ public class PriceDTO {
     Integer multibuyQuantity;
     Integer clubMultibuyPriceCent;
     Integer clubMultibuyQuantity;
-    OffsetDateTime updatedAt;
 }

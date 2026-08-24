@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { apiFetch } from '../api'
 import './SelectStores.css'
 
 interface Store {
@@ -37,7 +38,7 @@ export default function SelectStores() {
         let hasMore = true
 
         while (hasMore) {
-          const res = await fetch(`/api/stores?page=${page}&size=50`)
+          const res = await apiFetch(`/stores?page=${page}&size=50`)
           const data: PaginationResponse = await res.json()
           allStores = [...allStores, ...data.content]
           hasMore = page < data.page.totalPages - 1

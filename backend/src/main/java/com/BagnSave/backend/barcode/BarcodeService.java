@@ -21,8 +21,8 @@ public class BarcodeService {
 
     private BarcodeDTO toDTO(Barcode barcode) {
         return new BarcodeDTO(
-            barcode.getBarcode(),
-            barcode.getProductId()
+            barcode.getId().getBarcode(),
+            barcode.getId().getProductId()
         );
     }
 

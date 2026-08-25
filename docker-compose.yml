@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:17-alpine
+    container_name: bagnsave-db
+    environment:
+      POSTGRES_DB: bagnsave_db_v2
+      POSTGRES_USER: bashServiceAccount
+      POSTGRES_PASSWORD: temp
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bashServiceAccount"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - bagnsave-network
+
+  # Spring Boot Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: bagnsave-backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/bagnsave_db_v2
+      SPRING_DATASOURCE_USERNAME: bashServiceAccount
+      SPRING_DATASOURCE_PASSWORD: temp
+      SPRING_PROFILES_ACTIVE: prod
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - bagnsave-network
+    restart: unless-stopped
+
+  # React Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: bagnsave-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - bagnsave-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  bagnsave-network:
+    driver: bridge
+

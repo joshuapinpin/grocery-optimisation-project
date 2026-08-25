@@ -1,12 +1,10 @@
-package com.BagnSave.backend.price;
+package com.BagnSave.backend.barcode;
 
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import java.time.OffsetDateTime;
-
 import java.io.Serializable;
 
 @Getter
@@ -14,10 +12,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
-public class PriceId implements Serializable {
+public class BarcodeId implements Serializable {
 
-    private OffsetDateTime updatedAt;
-    private Integer storeId;
     private Integer productId;
-    
+    private String barcode;
 }

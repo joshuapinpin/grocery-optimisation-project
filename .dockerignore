@@ -1,0 +1,13 @@
+# Docker build ignore files
+target/
+node_modules/
+.git
+.gitignore
+.env
+.env.local
+README.md
+.DS_Store
+*.log
+dist/
+build/
+

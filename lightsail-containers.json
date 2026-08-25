@@ -1,0 +1,36 @@
+{
+  "containerServiceName": "bagnsave",
+  "containers": {
+    "bagnsave-backend": {
+      "image": "bagnsave-backend:latest",
+      "ports": {
+        "8080": "HTTP"
+      },
+      "environment": {
+        "SPRING_PROFILES_ACTIVE": "prod",
+        "SPRING_DATASOURCE_URL": "jdbc:postgresql://<RDS_ENDPOINT>:5432/bagnsave_db_v2",
+        "SPRING_DATASOURCE_USERNAME": "bashServiceAccount",
+        "SPRING_DATASOURCE_PASSWORD": "<PASSWORD>"
+      }
+    },
+    "bagnsave-frontend": {
+      "image": "bagnsave-frontend:latest",
+      "ports": {
+        "80": "HTTP"
+      }
+    }
+  },
+  "publicEndpoint": {
+    "containerName": "bagnsave-frontend",
+    "containerPort": 80,
+    "healthCheckConfig": {
+      "healthyThreshold": 2,
+      "unhealthyThreshold": 2,
+      "timeoutSeconds": 2,
+      "intervalSeconds": 5,
+      "path": "/",
+      "successCodes": "200"
+    }
+  }
+}
+

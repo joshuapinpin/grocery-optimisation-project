@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Run the installer, then move the binary into a standard system PATH
-RUN curl https://install.duckdb.org | sh && \
+RUN curl https://install.duckdb.org | bash && \
     mv /root/.duckdb/cli/latest/duckdb /usr/local/bin/duckdb
 
 # Copys create script into entry point to run after postgresql starts

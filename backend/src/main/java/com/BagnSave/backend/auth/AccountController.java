@@ -25,6 +25,6 @@ public class AccountController {
             return null;
         }
         Account account = authenticatedAccountResolver.resolve(authentication);
-        return new AccountDTO(account.getId(), account.getEmail(), account.getName());
+        return new AccountDTO(account.getId(), account.getEmail(), account.getName(), account.getAuthProvider());
     }
 }

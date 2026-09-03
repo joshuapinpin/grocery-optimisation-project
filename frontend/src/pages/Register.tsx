@@ -1,31 +1,49 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import './Register.css'
+import {useAuth} from "../context/AuthContext.tsx";
+import GoogleSignInButton from '../components/GoogleSignInButton'
 
 function Register() {
-  const [username, setUsername] = useState('')
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPass, setConfirmPass] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
   const navigate = useNavigate()
+  const { refreshUser } = useAuth()
 
-  function handleSubmit(e: React.SubmitEvent) {
+  async function handleSubmit(e: React.SubmitEvent) {
     e.preventDefault()
-    console.log(username, password)
+    console.log(name, password)
 
-    if (password != confirmPass) {
-      setErrorMsg("passwords dont match")
-      return
+    if (password != confirmPass) {setErrorMsg("passwords dont match"); return}
+    if (name == '' || password == '' || email == '') {setErrorMsg("please fill everything in"); return}
+
+
+    try{
+      const res = await fetch('api/auth/register',{
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include', // needed to receive the session cookie
+        body: JSON.stringify({
+          email: email,
+          password: password,
+          name: name
+        })
+      })
+
+      if(!res.ok){
+        const err = await res.json().catch(() => null)
+        setErrorMsg(err?.error ?? 'registration failed')
+        return
+      }
+      await refreshUser()   // pulls the now-authenticated session into context
+      navigate('/') // redirects straight to home
     }
-
-    if (username == '' || password == '') {
-      setErrorMsg("please fill everything in")
-      return
+    catch{
+      setErrorMsg('could not reach server')
     }
-
-    setErrorMsg('')
-    // TODO connect to backend later
-    navigate('/login')
   }
 
   return (
@@ -37,11 +55,20 @@ function Register() {
         <form onSubmit={handleSubmit} className='register-form'>
           <input
             type='text'
-            placeholder='Username'
-            value={username}
+            placeholder='Name'
+            value={name}
             onChange={(e) => {
-              setUsername(e.target.value)
+              setName(e.target.value)
             }}
+          />
+
+          <input
+              type='email'
+              placeholder='Email'
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value)
+              }}
           />
 
           <input
@@ -66,6 +93,11 @@ function Register() {
 
           <button type='submit' className='register-button'>Register</button>
         </form>
+
+        <div className='login-divider'>
+          <span>or</span>
+        </div>
+        <GoogleSignInButton label='Sign up with Google' />
 
         <p className='register-login-link'>
           Already have an account? <Link to='/login'>Sign in</Link>

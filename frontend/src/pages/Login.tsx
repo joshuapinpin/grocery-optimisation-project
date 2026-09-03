@@ -1,25 +1,36 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import './Login.css'
+import GoogleSignInButton from '../components/GoogleSignInButton'
 
 function Login() {
-  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
   const navigate = useNavigate()
+  const { refreshUser } = useAuth()
 
-  function handleSubmit(e: React.SubmitEvent) {
+  async function handleSubmit(e: React.SubmitEvent) {
     e.preventDefault()
-    console.log(username, password)
 
-    if (username == '' || password == '') {
-      setErrorMsg('please fill everything in')
-      return
+    if (email == '' || password == '') { setErrorMsg('please fill everything in'); return}
+
+    try{
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ email: email, password: password })
+      })
+
+      if(!res.ok) { setErrorMsg('invalid email or password'); return }
+
+      await refreshUser()
+      navigate('/')
+    } catch{
+      setErrorMsg('could not reach server')
     }
-
-    setErrorMsg('')
-    // TODO connect to backend later
-    navigate('/')
   }
 
   return (
@@ -30,27 +41,25 @@ function Login() {
 
         <form onSubmit={handleSubmit} className='login-form'>
           <input
-            type='text'
-            placeholder='Username'
-            value={username}
-            onChange={(e) => {
-              setUsername(e.target.value)
-            }}
+              type='text'
+              placeholder='Email'
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
           />
-
           <input
-            type='password'
-            placeholder='Password'
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value)
-            }}
+              type='password'
+              placeholder='Password'
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
           />
-
           {errorMsg != '' ? <p className='login-error'>{errorMsg}</p> : null}
-
           <button type='submit' className='login-button'>Sign in</button>
         </form>
+
+        <div className='login-divider'>
+          <span>or</span>
+        </div>
+        <GoogleSignInButton label='Sign in with Google' />
 
         <p className='login-register-link'>
           Don't have an account? <Link to='/register'>Create one</Link>
